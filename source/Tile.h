@@ -15,5 +15,7 @@ class AppleTile : public Tile
 };
 
 typedef enum ObjectType{
-
+    FLOATS,
+    JACKET,
+    SUNGLASSES
 }ObjectType;
