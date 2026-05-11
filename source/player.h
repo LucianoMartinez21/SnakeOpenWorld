@@ -1,6 +1,8 @@
+#pragma once
 #include "raylib.h"
 #include "global.h"
 #include <math.h>
+#include "map.h"
 
 
 enum DirectionFacing{
@@ -11,9 +13,6 @@ enum DirectionFacing{
 };
 
 class Player{
-    private:
-        Vector2 PlayerSpeed;
-        DirectionFacing DirFacing;
     public:
         //Public Functions
         // Camera related
@@ -23,15 +22,18 @@ class Player{
         void SetCamRotation(float Degree);
         void SetCamZoom(float Augmentation);
         void FollowTarget();
+        void CheckCameraMapLimits();
+
         //Position and movement related
         void SetPlayerPos(short int x, short int y);
         void SetPlayerSpeed(float x, float y);
         void UpdateMovement();
-        //Getters
-        Vector2 GetSpeed();
-        int GetDirFace();
+        void CheckMapLimits(Map &Mapa);
+
         //Public Vars
         Vector2 PlayerPosition;
         int PlayerTileX, PlayerTileY;
         Camera2D PlayerCamera;
+        Vector2 PlayerSpeed;
+        DirectionFacing DirFacing;
 };

@@ -42,17 +42,18 @@ void Player::UpdateMovement()
     FollowTarget();
 }
 
-/*Vector2 Player::GetPlayerPos()
+void Player::CheckMapLimits(Map &Mapa)
 {
-    return PlayerPosition;
-}*/
-Vector2 Player::GetSpeed()
-{
-    return PlayerSpeed;
+    if (PlayerPosition.x < 0) PlayerPosition.x = 0;
+    else if ((PlayerPosition.x + PLAYER_SIZE) > Mapa.TileX*MAP_TILE_SIZE) PlayerPosition.x = (float)Mapa.TileX*MAP_TILE_SIZE - PLAYER_SIZE;
+    if (PlayerPosition.y < 0) PlayerPosition.y = 0;
+    else if ((PlayerPosition.y + PLAYER_SIZE) > Mapa.TileY*MAP_TILE_SIZE) PlayerPosition.y = (float)Mapa.TileY*MAP_TILE_SIZE - PLAYER_SIZE;
 }
 
-
-int Player::GetDirFace()
+void Player::CheckCameraMapLimits()
 {
-    return DirFacing;
+    if (PlayerCamera.target.x < 0 + ((SCREENW/PlayerCamera.zoom)/2))    PlayerCamera.target.x = (float)(0 + (SCREENW/PlayerCamera.zoom) / 2);
+    if (PlayerCamera.target.x > 4046 - ((SCREENW/PlayerCamera.zoom)/2)) PlayerCamera.target.x = (float)(4046 - (SCREENW/PlayerCamera.zoom) / 2);
+    if (PlayerCamera.target.y < 0 + ((SCREENH/PlayerCamera.zoom)/2))    PlayerCamera.target.y = (float)(0 + (SCREENH/PlayerCamera.zoom) / 2);
+    if (PlayerCamera.target.y > 1997 - ((SCREENH/PlayerCamera.zoom)/2)) PlayerCamera.target.y = (float)(1998 - (SCREENH/PlayerCamera.zoom) / 2);
 }
