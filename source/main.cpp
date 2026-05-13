@@ -5,6 +5,8 @@
 #include "global.h"
 #include "map.h"
 #include "raylib.h"
+#include "sprite.h"
+#include <vector>
 using namespace std;
 
 int main(void)
@@ -27,7 +29,7 @@ int main(void)
     SnakeDude.SetCamTarget((float) SnakeDude.PlayerPosition.x + PLAYER_SIZE / 2,(float) SnakeDude.PlayerPosition.y + PLAYER_SIZE / 2);
     SnakeDude.InitCamOffset();
     SnakeDude.SetCamRotation(0);
-    SnakeDude.SetCamZoom(1.2f);
+    SnakeDude.SetCamZoom(2.0f);
     SnakeDude.SetPlayerPos((float) (MainMap.TileX*MAP_TILE_SIZE)/2, (float) (MainMap.TileY*MAP_TILE_SIZE)/2);
 
     //Declare Fog of War Texture
@@ -35,6 +37,16 @@ int main(void)
     SetTextureFilter(FogOfWar.texture, TEXTURE_FILTER_BILINEAR);
     SetTextureWrap(FogOfWar.texture, TEXTURE_WRAP_CLAMP);
 
+    //Declare a basic Sprite
+    //Sprite Example ("resource/WorldTile.png", (float)100, (float) 100, 10);
+    //Sprite World ("resource/WorldTile.png", (float)100, (float) 100, 10);
+    vector <Sprite> World;
+    for(int i = 0; i < 4; i++)
+    {
+        World.push_back(Sprite("resource/WorldTile.png", (float)0, (float) 0, 10));
+    }
+
+    //Sprite Example ("resource/WorldTile.png", (float)x * MAP_TILE_SIZE, (float) x * MAP_TILE_SIZE, 10);
     SetTargetFPS(60);
 
 
@@ -84,7 +96,7 @@ int main(void)
             ClearBackground(RAYWHITE);
             //DrawText("Move that pixel", 10, 10, 20, DARKGRAY);
             //Draws the background map
-            for(unsigned int y = 0; y < MainMap.TileY; y++)
+            /*for(unsigned int y = 0; y < MainMap.TileY; y++)
             {
                 for(unsigned int x = 0; x < MainMap.TileX; x++)
                 {
@@ -99,11 +111,42 @@ int main(void)
                                         MAP_TILE_SIZE,
                                         Fade(DARKBLUE, 0.5f));
                 }
-            }
+                }*/
+
             //Draws relative to the Player's Camera
             BeginMode2D(SnakeDude.PlayerCamera);
                 //Example square
-                DrawRectangleV((Vector2){40,50}, {50,50}, PURPLE);
+                //DrawRectangleV((Vector2){40,50}, {50,50}, PURPLE);
+                //Drawing the world
+                for(unsigned int y = 0; y < MainMap.TileY; y++)
+                {
+                    for(unsigned int x = 0; x < MainMap.TileX; x++)
+                    {
+
+                        if(y <= 32 && x <= 32)
+                        {
+                            World[0].ChangeFrame(0);
+                            World[0].DrawSpritePro((Vector2){ (float)x*MAP_TILE_SIZE, (float)y*MAP_TILE_SIZE },(Vector2){ MAP_TILE_SIZE, MAP_TILE_SIZE } , (Vector2){ (float)0, (float)0 }, 0.0f);
+                        }
+                        else if (y > 32 && y <= 64 && x <= 32)
+                        {
+                            World[1].ChangeFrame(1);
+                            World[1].DrawSpritePro((Vector2){ (float)x*MAP_TILE_SIZE, (float)y*MAP_TILE_SIZE },(Vector2){ MAP_TILE_SIZE, MAP_TILE_SIZE } , (Vector2){ (float)0, (float)0 }, 0.0f);
+                        }
+                        else if (y <= 32 && x > 32 && x <= 64)
+                        {
+                            World[2].ChangeFrame(2);
+                            World[2].DrawSpritePro((Vector2){ (float)x*MAP_TILE_SIZE, (float)y*MAP_TILE_SIZE },(Vector2){ MAP_TILE_SIZE, MAP_TILE_SIZE } , (Vector2){ (float)0, (float)0 }, 0.0f);
+                        }
+                        else if (y > 32 && x > 32 && x <= 64 && y <= 64)
+                        {
+                            World[3].ChangeFrame(3);
+                            World[3].DrawSpritePro((Vector2){ (float)x*MAP_TILE_SIZE, (float)y*MAP_TILE_SIZE },(Vector2){ MAP_TILE_SIZE, MAP_TILE_SIZE } , (Vector2){ (float)0, (float)0 }, 0.0f);
+                        }
+
+                        //DrawRectangle(int posX, int posY, int width, int height, Color color)
+                    }
+                }
                 //Player's Texture
                 DrawRectangleV((SnakeDude.PlayerPosition), (Vector2){PLAYER_SIZE, PLAYER_SIZE}, RED);
                 //Fog of War Texture

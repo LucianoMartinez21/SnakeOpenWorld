@@ -1,6 +1,6 @@
 # Makefile
 
-CC      = gcc
+CC      = g++
 TARGET  = app
 SRC     = source/*.cpp
 LIBS    = -lraylib -lGL -lm -lpthread -ldl -lrt -lX11

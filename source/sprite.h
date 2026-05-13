@@ -17,6 +17,8 @@ class Sprite
             float PositionX, float PositionY, uint8_t TotalSpriteFrames);
         void DrawSpritePro(Vector2 Resize,
             Vector2 Origin, float Rotation);
+        void DrawSpritePro(Vector2 Location, Vector2 Resize,
+            Vector2 Origin, float Rotation);
         void AddInitialSpeed(Vector2 SpeedVector);
-
+        void ChangeFrame(int Frame);
 };
