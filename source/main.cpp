@@ -1,6 +1,5 @@
-#include <algorithm>
 #include <cstdlib>
-#include <iostream>
+#include "tile.h"
 #include "player.h"
 #include "global.h"
 #include "map.h"
@@ -40,10 +39,17 @@ int main(void)
     //Declare a basic Sprite
     //Sprite Example ("resource/WorldTile.png", (float)100, (float) 100, 10);
     //Sprite World ("resource/WorldTile.png", (float)100, (float) 100, 10);
-    vector <Sprite> World;
-    for(int i = 0; i < 4; i++)
+    /*vector <Sprite> World;
+    for(int i = 0; i <= 4; i++)
     {
         World.push_back(Sprite("resource/WorldTile.png", (float)0, (float) 0, 10));
+    }*/
+    vector <Tile> World;
+    for(int i = 0; i <= 4; i++)
+    {
+        World.push_back(Tile());
+        World[i].CanKill = false;
+        World[i].TileSprite = Sprite("resource/WorldTile.png", (float)0, (float) 0, 10);
     }
 
     //Sprite Example ("resource/WorldTile.png", (float)x * MAP_TILE_SIZE, (float) x * MAP_TILE_SIZE, 10);
@@ -54,20 +60,16 @@ int main(void)
     {
         //Handles The Movement
         //TODO?: Make it a function?
-        if (IsKeyDown(KEY_RIGHT))   {SnakeDude.SetPlayerSpeed(5.0f, 0.0f);}
-        if (IsKeyDown(KEY_LEFT))    {SnakeDude.SetPlayerSpeed(-5.0f, 0.0f);}
-        if (IsKeyDown(KEY_UP))      {SnakeDude.SetPlayerSpeed(0.0f, -5.0f);}
-        if (IsKeyDown(KEY_DOWN))    {SnakeDude.SetPlayerSpeed(0.0f, 5.0f);}
+        if (IsKeyDown(KEY_RIGHT))   {SnakeDude.SetPlayerSpeed(4.5f, 0.0f);}
+        if (IsKeyDown(KEY_LEFT))    {SnakeDude.SetPlayerSpeed(-4.5f, 0.0f);}
+        if (IsKeyDown(KEY_UP))      {SnakeDude.SetPlayerSpeed(0.0f, -4.5f);}
+        if (IsKeyDown(KEY_DOWN))    {SnakeDude.SetPlayerSpeed(0.0f, 4.5f);}
         SnakeDude.UpdateMovement();
 
         //Player's Limits in the map
         SnakeDude.CheckMapLimits(MainMap);
 
         //Camera's Limits in the map
-        /*if (SnakeDude.PlayerCamera.target.x < 0 + ((SCREENW/SnakeDude.PlayerCamera.zoom)/2)) SnakeDude.PlayerCamera.target.x = (float)(0 + (SCREENW/SnakeDude.PlayerCamera.zoom) / 2);
-        if (SnakeDude.PlayerCamera.target.x > 4046 - ((SCREENW/SnakeDude.PlayerCamera.zoom)/2)) SnakeDude.PlayerCamera.target.x = (float)(4046 - (SCREENW/SnakeDude.PlayerCamera.zoom) / 2);
-        if (SnakeDude.PlayerCamera.target.y < 0 + ((SCREENH/SnakeDude.PlayerCamera.zoom)/2)) SnakeDude.PlayerCamera.target.y = (float)(0 + (SCREENH/SnakeDude.PlayerCamera.zoom) / 2);
-        if (SnakeDude.PlayerCamera.target.y > 1997 - ((SCREENH/SnakeDude.PlayerCamera.zoom)/2)) SnakeDude.PlayerCamera.target.y = (float)(1998 - (SCREENH/SnakeDude.PlayerCamera.zoom) / 2);*/
         SnakeDude.CheckCameraMapLimits();
 
         //Previous visited Tiles are set to parcial fog
@@ -125,26 +127,29 @@ int main(void)
 
                         if(y <= 32 && x <= 32)
                         {
-                            World[0].ChangeFrame(0);
-                            World[0].DrawSpritePro((Vector2){ (float)x*MAP_TILE_SIZE, (float)y*MAP_TILE_SIZE },(Vector2){ MAP_TILE_SIZE, MAP_TILE_SIZE } , (Vector2){ (float)0, (float)0 }, 0.0f);
+                            World[0].TileSprite.ChangeFrame(0);
+                            World[0].TileSprite.DrawSpritePro((Vector2){ (float)x*MAP_TILE_SIZE, (float)y*MAP_TILE_SIZE },(Vector2){ MAP_TILE_SIZE, MAP_TILE_SIZE } , (Vector2){ (float)0, (float)0 }, 0.0f);
                         }
                         else if (y > 32 && y <= 64 && x <= 32)
                         {
-                            World[1].ChangeFrame(1);
-                            World[1].DrawSpritePro((Vector2){ (float)x*MAP_TILE_SIZE, (float)y*MAP_TILE_SIZE },(Vector2){ MAP_TILE_SIZE, MAP_TILE_SIZE } , (Vector2){ (float)0, (float)0 }, 0.0f);
+                            World[1].TileSprite.ChangeFrame(1);
+                            World[1].TileSprite.DrawSpritePro((Vector2){ (float)x*MAP_TILE_SIZE, (float)y*MAP_TILE_SIZE },(Vector2){ MAP_TILE_SIZE, MAP_TILE_SIZE } , (Vector2){ (float)0, (float)0 }, 0.0f);
                         }
                         else if (y <= 32 && x > 32 && x <= 64)
                         {
-                            World[2].ChangeFrame(2);
-                            World[2].DrawSpritePro((Vector2){ (float)x*MAP_TILE_SIZE, (float)y*MAP_TILE_SIZE },(Vector2){ MAP_TILE_SIZE, MAP_TILE_SIZE } , (Vector2){ (float)0, (float)0 }, 0.0f);
+                            World[2].TileSprite.ChangeFrame(2);
+                            World[2].TileSprite.DrawSpritePro((Vector2){ (float)x*MAP_TILE_SIZE, (float)y*MAP_TILE_SIZE },(Vector2){ MAP_TILE_SIZE, MAP_TILE_SIZE } , (Vector2){ (float)0, (float)0 }, 0.0f);
                         }
                         else if (y > 32 && x > 32 && x <= 64 && y <= 64)
                         {
-                            World[3].ChangeFrame(3);
-                            World[3].DrawSpritePro((Vector2){ (float)x*MAP_TILE_SIZE, (float)y*MAP_TILE_SIZE },(Vector2){ MAP_TILE_SIZE, MAP_TILE_SIZE } , (Vector2){ (float)0, (float)0 }, 0.0f);
+                            World[3].TileSprite.ChangeFrame(3);
+                            World[3].TileSprite.DrawSpritePro((Vector2){ (float)x*MAP_TILE_SIZE, (float)y*MAP_TILE_SIZE },(Vector2){ MAP_TILE_SIZE, MAP_TILE_SIZE } , (Vector2){ (float)0, (float)0 }, 0.0f);
                         }
-
-                        //DrawRectangle(int posX, int posY, int width, int height, Color color)
+                        else if (y <= 32 && x <= 96 && x > 64)
+                        {
+                            World[4].TileSprite.ChangeFrame(4);
+                            World[4].TileSprite.DrawSpritePro((Vector2){ (float)x*MAP_TILE_SIZE, (float)y*MAP_TILE_SIZE },(Vector2){ MAP_TILE_SIZE, MAP_TILE_SIZE } , (Vector2){ (float)0, (float)0 }, 0.0f);
+                        }
                     }
                 }
                 //Player's Texture

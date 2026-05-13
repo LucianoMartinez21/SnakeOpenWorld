@@ -1,6 +1,10 @@
 #include "player.h"
 #include <raylib.h>
 
+Player::Player() : PlayerSprite("", 0, 0, 0)
+{
+}
+
 void Player::SetCamTarget(short int x, short int y)
 {
     PlayerCamera.target = (Vector2){ (float)x, (float)y };
@@ -38,8 +42,17 @@ void Player::SetPlayerSpeed(float x, float y)
 
 void Player::UpdateMovement()
 {
+    Vector2 PreviousPosition = Tail[0];
+    Vector2 PreviousPositionAux;
+    Tail[0] = PlayerPosition;
     PlayerPosition = {PlayerPosition.x + PlayerSpeed.x, PlayerPosition.y + PlayerSpeed.y};
     FollowTarget();
+    for(int index = 1; index < TailLen; index++)
+    {
+        PreviousPositionAux = Tail[index];
+        Tail[index] = PreviousPosition;
+        PreviousPosition = PreviousPositionAux;
+    }
 }
 
 void Player::CheckMapLimits(Map &Mapa)

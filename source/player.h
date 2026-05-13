@@ -1,8 +1,11 @@
 #pragma once
 #include "raylib.h"
 #include "global.h"
+#include <cstdint>
 #include <math.h>
+#include <vector>
 #include "map.h"
+#include "sprite.h"
 
 
 enum DirectionFacing{
@@ -14,6 +17,7 @@ enum DirectionFacing{
 
 class Player{
     public:
+        Player();
         //Public Functions
         // Camera related
         void SetCamTarget(short int x, short int y);
@@ -30,10 +34,19 @@ class Player{
         void UpdateMovement();
         void CheckMapLimits(Map &Mapa);
 
+        //Inventory
+
+
         //Public Vars
         Vector2 PlayerPosition;
         int PlayerTileX, PlayerTileY;
         Camera2D PlayerCamera;
         Vector2 PlayerSpeed;
         DirectionFacing DirFacing;
+        bool IsDead;
+        int TailLen;
+        Vector2 Tail[100];
+        Sprite PlayerSprite;
+    private:
+        std::vector<uint8_t> Inventory;
 };
