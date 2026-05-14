@@ -1,7 +1,9 @@
 #pragma once
 #include "global.h"
+#include "player.h"
 #include "sprite.h"
 #include <cstdint>
+#include <raylib.h>
 
 class Tile{
     public:
@@ -9,6 +11,14 @@ class Tile{
         bool CanKill;
         Sprite TileSprite;
         Tile();
+        void SetRangeEffect(Rectangle Area);
+        Rectangle GetRange();
+        void Killzone(Player Dude);
+    private:
+        bool IsHarsh;
+        Rectangle RangeOfEffect;
+        unsigned short int Drainer;
+
 };
 
 class AppleTile : public Tile

@@ -70,3 +70,14 @@ void Player::CheckCameraMapLimits()
     if (PlayerCamera.target.y < 0 + ((SCREENH/PlayerCamera.zoom)/2))    PlayerCamera.target.y = (float)(0 + (SCREENH/PlayerCamera.zoom) / 2);
     if (PlayerCamera.target.y > 1997 - ((SCREENH/PlayerCamera.zoom)/2)) PlayerCamera.target.y = (float)(1998 - (SCREENH/PlayerCamera.zoom) / 2);
 }
+
+void Player::Coalition() //Checks the Coalition of the player and itself
+{
+    for(int i = 0; i < TailLen; i++)
+    {
+        if(Tail[i].x == PlayerPosition.x and Tail[i].y == PlayerPosition.y)
+            IsDead = true;
+    }
+}
+//void InadequateEnviroment(); //Harsh conditions of the enviroment will start slowly killing the player
+//void PositiveCoalition(AppleTile Fruit);

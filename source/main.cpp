@@ -36,23 +36,19 @@ int main(void)
     SetTextureFilter(FogOfWar.texture, TEXTURE_FILTER_BILINEAR);
     SetTextureWrap(FogOfWar.texture, TEXTURE_WRAP_CLAMP);
 
-    //Declare a basic Sprite
-    //Sprite Example ("resource/WorldTile.png", (float)100, (float) 100, 10);
-    //Sprite World ("resource/WorldTile.png", (float)100, (float) 100, 10);
-    /*vector <Sprite> World;
-    for(int i = 0; i <= 4; i++)
-    {
-        World.push_back(Sprite("resource/WorldTile.png", (float)0, (float) 0, 10));
-    }*/
+    //Declare a World Tile
     vector <Tile> World;
+    vector <AppleTile> Fruits;
     for(int i = 0; i <= 4; i++)
     {
         World.push_back(Tile());
         World[i].CanKill = false;
         World[i].TileSprite = Sprite("resource/WorldTile.png", (float)0, (float) 0, 10);
+        Fruits.push_back(AppleTile());
+        Fruits[i].CanKill = false;
+        Fruits[i].TileSprite = Sprite("resource/FruitTiles.png", 5, 5, 10);
+        Fruits[i].Score = 5;
     }
-
-    //Sprite Example ("resource/WorldTile.png", (float)x * MAP_TILE_SIZE, (float) x * MAP_TILE_SIZE, 10);
     SetTargetFPS(60);
 
 
@@ -152,6 +148,7 @@ int main(void)
                         }
                     }
                 }
+                Fruits[1].TileSprite.DrawSpritePro((Vector2) {5*MAP_TILE_SIZE,5*MAP_TILE_SIZE}, (Vector2){ MAP_TILE_SIZE, MAP_TILE_SIZE }, (Vector2){ (float)0, (float)0 }, 0.0f);
                 //Player's Texture
                 DrawRectangleV((SnakeDude.PlayerPosition), (Vector2){PLAYER_SIZE, PLAYER_SIZE}, RED);
                 //Fog of War Texture
