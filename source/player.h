@@ -51,7 +51,7 @@ class Player{
         int TailLen;
         Vector2 Tail[100];
         Sprite PlayerSprite;
-        uint_fast8_t Life;
+        short Life = 100;
     private:
         std::vector<uint8_t> Inventory;
 };

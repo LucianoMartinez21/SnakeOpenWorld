@@ -1,3 +1,4 @@
+#include <cmath>
 #include <cstdlib>
 #include "tile.h"
 #include "player.h"
@@ -25,6 +26,7 @@ int main(void)
     SnakeDude.SetPlayerPos((float) SCREENW/2, (float) SCREENH/2);
     SnakeDude.PlayerTileX = 0;
     SnakeDude.PlayerTileY = 0;
+    SnakeDude.Life = 100;
     SnakeDude.SetCamTarget((float) SnakeDude.PlayerPosition.x + PLAYER_SIZE / 2,(float) SnakeDude.PlayerPosition.y + PLAYER_SIZE / 2);
     SnakeDude.InitCamOffset();
     SnakeDude.SetCamRotation(0);
@@ -42,14 +44,17 @@ int main(void)
     for(int i = 0; i <= 4; i++)
     {
         World.push_back(Tile());
-        World[i].CanKill = false;
+        World[i].IsHarsh = false;
         World[i].TileSprite = Sprite("resource/WorldTile.png", (float)0, (float) 0, 10);
+        World[i].SetRangeEffect(InitRanges(i));
         Fruits.push_back(AppleTile());
-        Fruits[i].CanKill = false;
+        Fruits[i].IsHarsh = false;
         Fruits[i].TileSprite = Sprite("resource/FruitTiles.png", 5, 5, 10);
         Fruits[i].Score = 5;
+        //TODO: Add the range of effect to world tiles.
     }
     SetTargetFPS(60);
+    World[0].IsHarsh = true;
 
 
     while(!WindowShouldClose())
@@ -67,6 +72,9 @@ int main(void)
 
         //Camera's Limits in the map
         SnakeDude.CheckCameraMapLimits();
+
+        //Check if the player is in the range
+        World[0].Killzone(SnakeDude);
 
         //Previous visited Tiles are set to parcial fog
         for (unsigned int i = 0; i < MainMap.TileX*MainMap.TileY; i++) if (MainMap.TileFog[i] == 1) MainMap.TileFog[i] = 2;
@@ -121,27 +129,27 @@ int main(void)
                     for(unsigned int x = 0; x < MainMap.TileX; x++)
                     {
 
-                        if(y <= 32 && x <= 32)
+                        if(y <= 32 && x <= 32) //32x32 x: 0-32, y: 0-32
                         {
                             World[0].TileSprite.ChangeFrame(0);
                             World[0].TileSprite.DrawSpritePro((Vector2){ (float)x*MAP_TILE_SIZE, (float)y*MAP_TILE_SIZE },(Vector2){ MAP_TILE_SIZE, MAP_TILE_SIZE } , (Vector2){ (float)0, (float)0 }, 0.0f);
                         }
-                        else if (y > 32 && y <= 64 && x <= 32)
+                        else if (y > 32 && y <= 64 && x <= 32) //32x32 x: 0-32, y: 32-64
                         {
                             World[1].TileSprite.ChangeFrame(1);
                             World[1].TileSprite.DrawSpritePro((Vector2){ (float)x*MAP_TILE_SIZE, (float)y*MAP_TILE_SIZE },(Vector2){ MAP_TILE_SIZE, MAP_TILE_SIZE } , (Vector2){ (float)0, (float)0 }, 0.0f);
                         }
-                        else if (y <= 32 && x > 32 && x <= 64)
+                        else if (y <= 32 && x > 32 && x <= 64) //32x32 x: 32-64, y: 0-32
                         {
                             World[2].TileSprite.ChangeFrame(2);
                             World[2].TileSprite.DrawSpritePro((Vector2){ (float)x*MAP_TILE_SIZE, (float)y*MAP_TILE_SIZE },(Vector2){ MAP_TILE_SIZE, MAP_TILE_SIZE } , (Vector2){ (float)0, (float)0 }, 0.0f);
                         }
-                        else if (y > 32 && x > 32 && x <= 64 && y <= 64)
+                        else if (y > 32 && x > 32 && x <= 64 && y <= 64) //32x32 x: 32-64, y: 32-64
                         {
                             World[3].TileSprite.ChangeFrame(3);
                             World[3].TileSprite.DrawSpritePro((Vector2){ (float)x*MAP_TILE_SIZE, (float)y*MAP_TILE_SIZE },(Vector2){ MAP_TILE_SIZE, MAP_TILE_SIZE } , (Vector2){ (float)0, (float)0 }, 0.0f);
                         }
-                        else if (y <= 32 && x <= 96 && x > 64)
+                        else if (y <= 32 && x <= 96 && x > 64) //32x32 x: 64-96, y: 0-32
                         {
                             World[4].TileSprite.ChangeFrame(4);
                             World[4].TileSprite.DrawSpritePro((Vector2){ (float)x*MAP_TILE_SIZE, (float)y*MAP_TILE_SIZE },(Vector2){ MAP_TILE_SIZE, MAP_TILE_SIZE } , (Vector2){ (float)0, (float)0 }, 0.0f);
@@ -157,9 +165,18 @@ int main(void)
                                 (Rectangle){ 0, 0, (float)MainMap.TileX*MAP_TILE_SIZE, (float)MainMap.TileY*MAP_TILE_SIZE },
                                 (Vector2) { 0, 0 }, 0.0f, WHITE);
             EndMode2D();
-
+            if(SnakeDude.IsDead)
+            {
+                DrawText("Game Over", SCREENW/2, SCREENH/2, 20, RED);
+            }
             DrawText(TextFormat("Current tile: [%i,%i]", SnakeDude.PlayerTileX, SnakeDude.PlayerTileY), 10, 10, 20, RAYWHITE);
             DrawText(TextFormat("Current position: [%f,%f]", SnakeDude.PlayerPosition.x, SnakeDude.PlayerPosition.y), 10, 30, 20, RAYWHITE);
+            DrawText(TextFormat("Is Player in WorldTile 0: [%b]", World[0].IsInRange(SnakeDude)), 10, 50, 20, RAYWHITE);
+            DrawText(TextFormat("Is Player in WorldTile 1: [%b]", World[1].IsInRange(SnakeDude)), 10, 70, 20, RAYWHITE);
+            DrawText(TextFormat("Is Player in WorldTile 2: [%b]", World[2].IsInRange(SnakeDude)), 10, 90, 20, RAYWHITE);
+            DrawText(TextFormat("Is Player in WorldTile 3: [%b]", World[3].IsInRange(SnakeDude)), 10, 110, 20, RAYWHITE);
+            DrawText(TextFormat("Is Player in WorldTile 4: [%b]", World[4].IsInRange(SnakeDude)), 10, 130, 20, RAYWHITE);
+            DrawText(TextFormat("Current Life: [%i]", SnakeDude.Life), 10, 150, 20, RED);
         EndDrawing();
     }
 
