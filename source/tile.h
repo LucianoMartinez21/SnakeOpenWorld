@@ -15,7 +15,7 @@ class Tile{
         void SetRangeEffect(Rectangle Area);
         Rectangle GetRange();
         void Killzone(Player &Dude);
-        bool IsInRange(Player Dude);
+        bool IsInRange(Player &Dude);
     private:
         bool IsPlayerInRange;
         Rectangle RangeOfEffect;

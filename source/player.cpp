@@ -81,3 +81,11 @@ void Player::Coalition() //Checks the Coalition of the player and itself
 }
 //void InadequateEnviroment(); //Harsh conditions of the enviroment will start slowly killing the player
 //void PositiveCoalition(AppleTile Fruit);
+
+void Player::ControllerHandler()
+{
+    if (IsKeyDown(KEY_RIGHT))   {SetPlayerSpeed(4.5f, 0.0f);}
+    if (IsKeyDown(KEY_LEFT))    {SetPlayerSpeed(-4.5f, 0.0f);}
+    if (IsKeyDown(KEY_UP))      {SetPlayerSpeed(0.0f, -4.5f);}
+    if (IsKeyDown(KEY_DOWN))    {SetPlayerSpeed(0.0f, 4.5f);}
+}

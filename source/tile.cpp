@@ -24,7 +24,7 @@ Rectangle Tile::GetRange()
 {
     return RangeOfEffect;
 }
-bool Tile::IsInRange(Player Dude)
+bool Tile::IsInRange(Player &Dude)
 {
     if( Dude.PlayerPosition.x >= RangeOfEffect.x &&
         Dude.PlayerPosition.x <= RangeOfEffect.width &&
@@ -32,6 +32,7 @@ bool Tile::IsInRange(Player Dude)
         Dude.PlayerPosition.y <= RangeOfEffect.height)
         {
             IsPlayerInRange = true;
+            Killzone(Dude);
         }
     else {
         IsPlayerInRange = false;
@@ -45,7 +46,8 @@ void Tile::Killzone(Player &Dude)
         return ;
     if(!IsPlayerInRange)
         return ;
-    Dude.Life -= Drainer;
+    if (!Dude.IsDead)
+        Dude.Life -= Drainer;
     if(Dude.Life <= 0)
         Dude.IsDead = true;
 }

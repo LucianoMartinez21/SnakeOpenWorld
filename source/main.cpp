@@ -59,12 +59,10 @@ int main(void)
 
     while(!WindowShouldClose())
     {
+        //while (SnakeDude.IsDead == true) {}
         //Handles The Movement
         //TODO?: Make it a function?
-        if (IsKeyDown(KEY_RIGHT))   {SnakeDude.SetPlayerSpeed(4.5f, 0.0f);}
-        if (IsKeyDown(KEY_LEFT))    {SnakeDude.SetPlayerSpeed(-4.5f, 0.0f);}
-        if (IsKeyDown(KEY_UP))      {SnakeDude.SetPlayerSpeed(0.0f, -4.5f);}
-        if (IsKeyDown(KEY_DOWN))    {SnakeDude.SetPlayerSpeed(0.0f, 4.5f);}
+        SnakeDude.ControllerHandler();
         SnakeDude.UpdateMovement();
 
         //Player's Limits in the map
@@ -74,7 +72,7 @@ int main(void)
         SnakeDude.CheckCameraMapLimits();
 
         //Check if the player is in the range
-        World[0].Killzone(SnakeDude);
+        //World[0].Killzone(SnakeDude);
 
         //Previous visited Tiles are set to parcial fog
         for (unsigned int i = 0; i < MainMap.TileX*MainMap.TileY; i++) if (MainMap.TileFog[i] == 1) MainMap.TileFog[i] = 2;
@@ -84,11 +82,12 @@ int main(void)
 
         //Checks Visibility and update the fog
         // TODO: Make it a function.
-        for (int y = (SnakeDude.PlayerTileY - PLAYER_TILE_VISIBILITY); y < (SnakeDude.PlayerTileY + PLAYER_TILE_VISIBILITY); y++)
+        /*for (int y = (SnakeDude.PlayerTileY - PLAYER_TILE_VISIBILITY); y < (SnakeDude.PlayerTileY + PLAYER_TILE_VISIBILITY); y++)
             for (int x = (SnakeDude.PlayerTileX - PLAYER_TILE_VISIBILITY); x < (SnakeDude.PlayerTileX + PLAYER_TILE_VISIBILITY); x++)
                 if((x >= 0) && (x < (int)MainMap.TileX) && (y >= 0) && (y < (int)MainMap.TileY))
                     MainMap.TileFog[y*MainMap.TileX + x] = 1;
-
+                    */
+        UpdateVision(SnakeDude.PlayerTileX, SnakeDude.PlayerTileY, MainMap);
         //Screen Draws
         BeginTextureMode(FogOfWar);
             ClearBackground(BLANK);
@@ -165,7 +164,7 @@ int main(void)
                                 (Rectangle){ 0, 0, (float)MainMap.TileX*MAP_TILE_SIZE, (float)MainMap.TileY*MAP_TILE_SIZE },
                                 (Vector2) { 0, 0 }, 0.0f, WHITE);
             EndMode2D();
-            if(SnakeDude.IsDead)
+            if(SnakeDude.IsDead == true)
             {
                 DrawText("Game Over", SCREENW/2, SCREENH/2, 20, RED);
             }

@@ -35,6 +35,7 @@ class Player{
         void UpdateMovement();
         void CheckMapLimits(Map &Mapa);
         void Coalition(); //Coalition of the player and a wall or itself
+        void ControllerHandler();
         //void InadequateEnviroment(); //Harsh conditions of the enviroment will start slowly killing the player
         //void PositiveCoalition(AppleTile Fruit);
 
