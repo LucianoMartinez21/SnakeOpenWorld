@@ -12,6 +12,17 @@ using namespace std;
 int main(void)
 {
     InitWindow(SCREENW, SCREENH, "Snake Game");
+
+    //Initialization of Player and Camera settings
+    Player SnakeDude;
+    SnakeDude.SetPlayerPos(SCREENW/2, SCREENH/2);
+    SnakeDude.PlayerTileX = 0;
+    SnakeDude.PlayerTileY = 0;
+    SnakeDude.SetCamTarget((float) SnakeDude.PlayerPosition.x + PLAYER_SIZE / 2,(float) SnakeDude.PlayerPosition.y + PLAYER_SIZE / 2);
+    SnakeDude.InitCamOffset();
+    SnakeDude.SetCamRotation(0);
+    SnakeDude.SetCamZoom(2.0f);
+
     //Declare Map Tiles
     Map MainMap;
     MainMap.TileX = 128;
@@ -20,18 +31,6 @@ int main(void)
     MainMap.TileFog = (unsigned char *)RL_CALLOC(MainMap.TileX*MainMap.TileY, sizeof(unsigned char));
 
     for (unsigned int i = 0; i < MainMap.TileY*MainMap.TileX; i++) MainMap.TileIds[i] = GetRandomValue(0, 1);
-
-    //Initialization of Player and Camera settings
-    Player SnakeDude;
-    SnakeDude.SetPlayerPos((float) SCREENW/2, (float) SCREENH/2);
-    SnakeDude.PlayerTileX = 0;
-    SnakeDude.PlayerTileY = 0;
-    SnakeDude.Life = 100;
-    SnakeDude.SetCamTarget((float) SnakeDude.PlayerPosition.x + PLAYER_SIZE / 2,(float) SnakeDude.PlayerPosition.y + PLAYER_SIZE / 2);
-    SnakeDude.InitCamOffset();
-    SnakeDude.SetCamRotation(0);
-    SnakeDude.SetCamZoom(2.0f);
-    SnakeDude.SetPlayerPos((float) (MainMap.TileX*MAP_TILE_SIZE)/2, (float) (MainMap.TileY*MAP_TILE_SIZE)/2);
 
     //Declare Fog of War Texture
     RenderTexture2D FogOfWar = LoadRenderTexture(MainMap.TileX, MainMap.TileY);
@@ -60,10 +59,10 @@ int main(void)
     while(!WindowShouldClose())
     {
         //while (SnakeDude.IsDead == true) {}
-        //Handles The Movement
-        //TODO?: Make it a function?
+        //Handles The Movement and Camera following
         SnakeDude.ControllerHandler();
         SnakeDude.UpdateMovement();
+        SnakeDude.FollowTarget();
 
         //Player's Limits in the map
         SnakeDude.CheckMapLimits(MainMap);
@@ -82,12 +81,8 @@ int main(void)
 
         //Checks Visibility and update the fog
         // TODO: Make it a function.
-        /*for (int y = (SnakeDude.PlayerTileY - PLAYER_TILE_VISIBILITY); y < (SnakeDude.PlayerTileY + PLAYER_TILE_VISIBILITY); y++)
-            for (int x = (SnakeDude.PlayerTileX - PLAYER_TILE_VISIBILITY); x < (SnakeDude.PlayerTileX + PLAYER_TILE_VISIBILITY); x++)
-                if((x >= 0) && (x < (int)MainMap.TileX) && (y >= 0) && (y < (int)MainMap.TileY))
-                    MainMap.TileFog[y*MainMap.TileX + x] = 1;
-                    */
         UpdateVision(SnakeDude.PlayerTileX, SnakeDude.PlayerTileY, MainMap);
+
         //Screen Draws
         BeginTextureMode(FogOfWar);
             ClearBackground(BLANK);

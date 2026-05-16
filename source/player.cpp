@@ -46,7 +46,6 @@ void Player::UpdateMovement()
     Vector2 PreviousPositionAux;
     Tail[0] = PlayerPosition;
     PlayerPosition = {PlayerPosition.x + PlayerSpeed.x, PlayerPosition.y + PlayerSpeed.y};
-    FollowTarget();
     for(int index = 1; index < TailLen; index++)
     {
         PreviousPositionAux = Tail[index];

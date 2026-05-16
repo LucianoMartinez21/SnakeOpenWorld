@@ -48,8 +48,8 @@ class Player{
         Camera2D PlayerCamera;
         Vector2 PlayerSpeed;
         DirectionFacing DirFacing;
-        bool IsDead;
-        int TailLen;
+        bool IsDead = false;
+        int TailLen = 0;
         Vector2 Tail[100];
         Sprite PlayerSprite;
         short Life = 100;
