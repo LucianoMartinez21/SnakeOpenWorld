@@ -51,7 +51,7 @@ class Player{
         bool IsDead = false;
         int TailLen = 0;
         Vector2 Tail[100];
-        Sprite PlayerSprite;
+        //Sprite PlayerSprite;
         short Life = 100;
     private:
         std::vector<uint8_t> Inventory;

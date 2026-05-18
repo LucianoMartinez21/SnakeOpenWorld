@@ -42,3 +42,7 @@ typedef enum ObjectType{
 }ObjectType;
 
 Rectangle InitRanges(int i);
+void DrawLimitWalls(int x, int y, Tile &Wall);
+void DrawDeepOcean(int x, int y, Tile &DeepWater);
+void DrawField(int x, int y, Tile &Grass);
+void DrawSnowField(int x, int y, Tile &Snow);

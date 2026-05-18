@@ -25,7 +25,7 @@ int main(void)
 
     //Declare Map Tiles
     Map MainMap;
-    MainMap.TileX = 128;
+    MainMap.TileX = 96;
     MainMap.TileY = 64;
     MainMap.TileIds = (unsigned char *)RL_CALLOC(MainMap.TileX*MainMap.TileY, sizeof(unsigned char));
     MainMap.TileFog = (unsigned char *)RL_CALLOC(MainMap.TileX*MainMap.TileY, sizeof(unsigned char));
@@ -122,8 +122,14 @@ int main(void)
                 {
                     for(unsigned int x = 0; x < MainMap.TileX; x++)
                     {
+                        World[2].TileSprite.ChangeFrame(2);
+                        DrawDeepOcean(x, y, World[2]);
+                        World[3].TileSprite.ChangeFrame(3);
+                        DrawSnowField(x, y, World[3]);
+                        World[4].TileSprite.ChangeFrame(4);
+                        DrawField(x, y, World[4]);
 
-                        if(y <= 32 && x <= 32) //32x32 x: 0-32, y: 0-32
+                        /*if(y <= 32 && x <= 32) //32x32 x: 0-32, y: 0-32
                         {
                             World[0].TileSprite.ChangeFrame(0);
                             World[0].TileSprite.DrawSpritePro((Vector2){ (float)x*MAP_TILE_SIZE, (float)y*MAP_TILE_SIZE },(Vector2){ MAP_TILE_SIZE, MAP_TILE_SIZE } , (Vector2){ (float)0, (float)0 }, 0.0f);
@@ -136,7 +142,8 @@ int main(void)
                         else if (y <= 32 && x > 32 && x <= 64) //32x32 x: 32-64, y: 0-32
                         {
                             World[2].TileSprite.ChangeFrame(2);
-                            World[2].TileSprite.DrawSpritePro((Vector2){ (float)x*MAP_TILE_SIZE, (float)y*MAP_TILE_SIZE },(Vector2){ MAP_TILE_SIZE, MAP_TILE_SIZE } , (Vector2){ (float)0, (float)0 }, 0.0f);
+                            DrawDeepOcean(x, y, World[2]);
+                            //World[2].TileSprite.DrawSpritePro((Vector2){ (float)x*MAP_TILE_SIZE, (float)y*MAP_TILE_SIZE },(Vector2){ MAP_TILE_SIZE, MAP_TILE_SIZE } , (Vector2){ (float)0, (float)0 }, 0.0f);
                         }
                         else if (y > 32 && x > 32 && x <= 64 && y <= 64) //32x32 x: 32-64, y: 32-64
                         {
@@ -147,7 +154,7 @@ int main(void)
                         {
                             World[4].TileSprite.ChangeFrame(4);
                             World[4].TileSprite.DrawSpritePro((Vector2){ (float)x*MAP_TILE_SIZE, (float)y*MAP_TILE_SIZE },(Vector2){ MAP_TILE_SIZE, MAP_TILE_SIZE } , (Vector2){ (float)0, (float)0 }, 0.0f);
-                        }
+                            }*/
                     }
                 }
                 Fruits[1].TileSprite.DrawSpritePro((Vector2) {5*MAP_TILE_SIZE,5*MAP_TILE_SIZE}, (Vector2){ MAP_TILE_SIZE, MAP_TILE_SIZE }, (Vector2){ (float)0, (float)0 }, 0.0f);

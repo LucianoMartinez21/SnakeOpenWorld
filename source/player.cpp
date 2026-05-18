@@ -1,7 +1,7 @@
 #include "player.h"
 #include <raylib.h>
 
-Player::Player() : PlayerSprite("", 0, 0, 0)
+Player::Player() //: PlayerSprite("", 0, 0, 0)
 {
 }
 
@@ -65,9 +65,9 @@ void Player::CheckMapLimits(Map &Mapa)
 void Player::CheckCameraMapLimits()
 {
     if (PlayerCamera.target.x < 0 + ((SCREENW/PlayerCamera.zoom)/2))    PlayerCamera.target.x = (float)(0 + (SCREENW/PlayerCamera.zoom) / 2);
-    if (PlayerCamera.target.x > 4046 - ((SCREENW/PlayerCamera.zoom)/2)) PlayerCamera.target.x = (float)(4046 - (SCREENW/PlayerCamera.zoom) / 2);
+    if (PlayerCamera.target.x > 3040 - ((SCREENW/PlayerCamera.zoom)/2)) PlayerCamera.target.x = (float)(3040 - (SCREENW/PlayerCamera.zoom) / 2);
     if (PlayerCamera.target.y < 0 + ((SCREENH/PlayerCamera.zoom)/2))    PlayerCamera.target.y = (float)(0 + (SCREENH/PlayerCamera.zoom) / 2);
-    if (PlayerCamera.target.y > 1997 - ((SCREENH/PlayerCamera.zoom)/2)) PlayerCamera.target.y = (float)(1998 - (SCREENH/PlayerCamera.zoom) / 2);
+    if (PlayerCamera.target.y > 2016 - ((SCREENH/PlayerCamera.zoom)/2)) PlayerCamera.target.y = (float)(2016 - (SCREENH/PlayerCamera.zoom) / 2);
 }
 
 void Player::Coalition() //Checks the Coalition of the player and itself
