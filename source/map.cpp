@@ -6,3 +6,8 @@ void UpdateVision(int TileX, int TileY, Map &Mapa)
             if((x >= 0) && (x < (int)Mapa.TileX) && (y >= 0) && (y < (int)Mapa.TileY))
                 Mapa.TileFog[y*Mapa.TileX + x] = 1;
 }
+
+int YInvertedFix(int TileY, int HeightSize)
+{
+    return abs((long)TileY + 1 - HeightSize);
+}

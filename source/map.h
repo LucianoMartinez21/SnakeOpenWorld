@@ -2,6 +2,7 @@
 //#include "player.h"
 #include "raylib.h"
 #include "global.h"
+#include <cstdlib>
 
 class Map{
     public:
@@ -10,4 +11,12 @@ class Map{
         unsigned char *TileIds;
         unsigned char *TileFog;
 };
+
+class MetaTiles
+{
+    public:
+        unsigned int MTileX;
+        unsigned int MTileY;
+};
 void UpdateVision(int TileX, int TileY, Map &Mapa);
+int YInvertedFix(int TileY, int HeightSize);

@@ -1,8 +1,13 @@
 #include "tile.h"
+#include "core.h"
 #include "global.h"
+#include "map.h"
 #include "player.h"
 #include "sprite.h"
+#include <cstdio>
 #include <ctime>
+#include <iostream>
+#include <list>
 #include <raylib.h>
 
 /*Tile::Tile()
@@ -25,9 +30,34 @@ Rectangle Tile::GetRange()
 {
     return RangeOfEffect;
 }
+
+bool RayCastPolygon(Vector2 Position, Polygon &Poly)
+{
+    int Polysize = Poly.Points.size();
+    bool inside = false;
+    for(int i = 0, j = Polysize - 1; i < Polysize; j = i++)
+    {
+        float Xi = Poly.Points[i].x, Yi = Poly.Points[i].y;
+        float Xj = Poly.Points[j].x, Yj = Poly.Points[j].y;
+        bool Intersects = ((Yi > Position.y) != (Yj > Position.y)) &&
+            (Position.x < (Xj - Xi) * (Position.y - Yi) / (Yj -Yi) + Xi);
+        if (Intersects)
+            inside = !inside;
+    }
+    return inside;
+}
+
 bool Tile::IsInRange(Player &Dude)
 {
-    if( Dude.PlayerPosition.x >= RangeOfEffect.x &&
+    if(!PolyRangeOfEffect.Points.empty())
+    {
+        if(RayCastPolygon(Dude.PlayerPosition, PolyRangeOfEffect))
+        {
+            IsPlayerInRange = true;
+            Killzone(Dude);
+        }
+    }
+    else if( Dude.PlayerPosition.x >= RangeOfEffect.x &&
         Dude.PlayerPosition.x <= RangeOfEffect.width &&
         Dude.PlayerPosition.y >= RangeOfEffect.y &&
         Dude.PlayerPosition.y <= RangeOfEffect.height)
@@ -221,4 +251,76 @@ void DrawSnowField(int x, int y, Tile &Snow)
             0.0f
         );
     }
+}
+
+void DrawShallowWaters(int x, int y, Tile &ShallowWater)
+{
+    //16x8 -> 32x16
+    if((y >= 8 && y < 16) && (x >= 16 && x < 32))
+    {
+        ShallowWater.TileSprite.DrawSpritePro(
+            (Vector2) { (float)x * MAP_TILE_SIZE, (float)y * MAP_TILE_SIZE },
+            (Vector2) { MAP_TILE_SIZE, MAP_TILE_SIZE },
+            (Vector2) { 0, 0 },
+            0.0f
+        );
+    }
+    // 16x16 48x24
+    else if((y >= 16 && y < 24) && (x >= 16 && x < 48))
+    {
+        ShallowWater.TileSprite.DrawSpritePro(
+            (Vector2) { (float)x * MAP_TILE_SIZE, (float)y * MAP_TILE_SIZE },
+            (Vector2) { MAP_TILE_SIZE, MAP_TILE_SIZE },
+            (Vector2) { 0, 0 },
+            0.0f
+        );
+    }
+    //8x16 -> 16x56
+    else if((y >= 16 && y < 56) && (x >= 8 && x < 16))
+    {
+        ShallowWater.TileSprite.DrawSpritePro(
+            (Vector2) { (float)x * MAP_TILE_SIZE, (float)y * MAP_TILE_SIZE },
+            (Vector2) { MAP_TILE_SIZE, MAP_TILE_SIZE },
+            (Vector2) { 0, 0 },
+            0.0f
+        );
+    }
+    //16x48 -> 48x56
+    else if((y >= 48 && y < 56) && (x >= 16 && x < 48))
+    {
+        ShallowWater.TileSprite.DrawSpritePro(
+            (Vector2) { (float)x * MAP_TILE_SIZE, (float)y * MAP_TILE_SIZE },
+            (Vector2) { MAP_TILE_SIZE, MAP_TILE_SIZE },
+            (Vector2) { 0, 0 },
+            0.0f
+        );
+    }
+}
+
+
+void DrawDesert(int x, int y, Tile &Sand)
+{
+    //16x24 -> 48x48
+    if((y >= 24 && y < 48) && (x >= 16 && x < 48))
+    {
+        Sand.TileSprite.DrawSpritePro(
+            (Vector2) { (float)x * MAP_TILE_SIZE, (float)y * MAP_TILE_SIZE },
+            (Vector2) { MAP_TILE_SIZE, MAP_TILE_SIZE },
+            (Vector2) { 0, 0 },
+            0.0f
+        );
+    }
+}
+/*void MetaTileRange(Tile &WorldTile, MetaTiles &MTile)
+{
+    if(!WorldTile.IsHarsh)
+        return ;
+
+    //WorldTile.SetRangeEffect();
+}*/
+
+void Tile::SetRangeEffect(std::pmr::list<Vector2> Points)
+{
+    for(Vector2 Point : Points)
+        PolyRangeOfEffect.Points.push_back(Point);
 }

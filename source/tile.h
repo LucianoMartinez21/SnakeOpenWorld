@@ -1,9 +1,11 @@
 #pragma once
+#include "core.h"
 #include "global.h"
 #include "player.h"
 #include "sprite.h"
 #include <cstdint>
 #include <raylib.h>
+#include "map.h"
 
 class Tile{
     public:
@@ -13,6 +15,7 @@ class Tile{
         Sprite TileSprite;
         Tile();
         void SetRangeEffect(Rectangle Area);
+        void SetRangeEffect(std::pmr::list<Vector2> Points);
         Rectangle GetRange();
         void Killzone(Player &Dude);
         bool IsInRange(Player &Dude);
@@ -20,6 +23,7 @@ class Tile{
         bool IsPlayerInRange;
         Rectangle RangeOfEffect;
         unsigned short int Drainer;
+        Polygon PolyRangeOfEffect;
 
 };
 
@@ -46,3 +50,6 @@ void DrawLimitWalls(int x, int y, Tile &Wall);
 void DrawDeepOcean(int x, int y, Tile &DeepWater);
 void DrawField(int x, int y, Tile &Grass);
 void DrawSnowField(int x, int y, Tile &Snow);
+void DrawShallowWaters(int x, int y, Tile &ShallowWater);
+void DrawDesert(int x, int y, Tile &Sand);
+bool RayCastPolygon(Vector2 Position, Polygon &Poly);
