@@ -5,6 +5,7 @@
 #include "sprite.h"
 #include <cstdint>
 #include <raylib.h>
+#include <vector>
 #include "map.h"
 
 class Tile{
@@ -36,7 +37,16 @@ class AppleTile : public Tile
 class ObjectTile : public Tile
 {
     public:
-    uint8_t Object;
+        uint8_t Object;
+};
+
+class GroupTile
+{
+    public:
+        bool IsNearPlayer = false;
+        Vector2 Center;
+        std::pmr::vector<Tile> Collection;
+        bool DistanceFromPlayer(Player Dude);
 };
 
 typedef enum ObjectType{
@@ -53,3 +63,4 @@ void DrawSnowField(int x, int y, Tile &Snow);
 void DrawShallowWaters(int x, int y, Tile &ShallowWater);
 void DrawDesert(int x, int y, Tile &Sand);
 bool RayCastPolygon(Vector2 Position, Polygon &Poly);
+bool isVisible(Tile Object, Camera2D MainCam);

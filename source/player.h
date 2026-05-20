@@ -6,7 +6,6 @@
 #include <vector>
 #include "map.h"
 #include "sprite.h"
-//#include "tile.h"
 
 
 enum DirectionFacing{
@@ -63,3 +62,5 @@ class Player{
   * E.G entering the shallow waters will not drain the life, but entering in deep waters without any
   * floaters will kill the player.
   */
+
+//bool isVisible(Tile Object, Camera2D MainCam);

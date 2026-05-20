@@ -88,3 +88,5 @@ void Player::ControllerHandler()
     if (IsKeyDown(KEY_UP))      {SetPlayerSpeed(0.0f, -4.5f);}
     if (IsKeyDown(KEY_DOWN))    {SetPlayerSpeed(0.0f, 4.5f);}
 }
+
+//void Draw tiles()

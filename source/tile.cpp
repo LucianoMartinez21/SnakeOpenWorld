@@ -324,3 +324,20 @@ void Tile::SetRangeEffect(std::pmr::list<Vector2> Points)
     for(Vector2 Point : Points)
         PolyRangeOfEffect.Points.push_back(Point);
 }
+
+/*bool GroupTile::DistanceFromPlayer(Player Dude)
+{
+    float Distance = 0.0f;
+
+    return IsNearPlayer;
+    }*/
+
+bool isVisible(Tile Object, Camera2D MainCam)
+{
+    Vector2 TopLeft = GetScreenToWorld2D({0, 0}, MainCam);
+    Vector2 BottomRight = GetScreenToWorld2D({(float) SCREENW, (float) SCREENH}, MainCam);
+    return (Object.TileX*MAP_TILE_SIZE) + MAP_TILE_SIZE > TopLeft.x &&
+        (Object.TileX*MAP_TILE_SIZE) < BottomRight.x &&
+        (Object.TileY*MAP_TILE_SIZE) + MAP_TILE_SIZE > TopLeft.y &&
+        (Object.TileY*MAP_TILE_SIZE) < BottomRight.y;
+}

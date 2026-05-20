@@ -6,6 +6,8 @@
 #include "map.h"
 #include "raylib.h"
 #include "sprite.h"
+#include "grid.h"
+#include <iostream>
 #include <vector>
 using namespace std;
 
@@ -44,6 +46,7 @@ int main(void)
     //Declare a World Tile
     vector <Tile> World;
     vector <AppleTile> Fruits;
+    //Grid WorldGrid;
     for(int i = 0; i <= 4; i++)
     {
         World.push_back(Tile());
@@ -53,7 +56,9 @@ int main(void)
         World[i].TileSprite.ChangeFrame(i);
         Fruits.push_back(AppleTile());
         Fruits[i].IsHarsh = false;
-        Fruits[i].TileSprite = Sprite("resource/FruitTiles.png", 5, 5, 10);
+        Fruits[i].TileX = 1 + i;
+        Fruits[i].TileY = 1 + i;
+        Fruits[i].TileSprite = Sprite("resource/FruitTiles.png", Fruits[i].TileX * MAP_TILE_SIZE, Fruits[i].TileY * MAP_TILE_SIZE, 10);
         Fruits[i].Score = 5;
         //TODO: Add the range of effect to world tiles.
     }
@@ -78,15 +83,16 @@ int main(void)
     SetTargetFPS(60);
     World[2].IsHarsh = true;
 
-
     while(!WindowShouldClose())
     {
-        World[2].IsInRange(SnakeDude);
+        //World[2].IsInRange(SnakeDude);
         //while (SnakeDude.IsDead == true) {}
         //Handles The Movement and Camera following
         SnakeDude.ControllerHandler();
         SnakeDude.UpdateMovement();
         SnakeDude.FollowTarget();
+
+        //Check if the player is in range of objects in the grid
 
         //Player's Limits in the map
         SnakeDude.CheckMapLimits(MainMap);
@@ -136,7 +142,21 @@ int main(void)
                         DrawShallowWaters(x, y, World[1]);
                     }
                 }
-                Fruits[1].TileSprite.DrawSpritePro((Vector2) {5*MAP_TILE_SIZE,5*MAP_TILE_SIZE}, (Vector2){ MAP_TILE_SIZE, MAP_TILE_SIZE }, (Vector2){ (float)0, (float)0 }, 0.0f);
+                //Draw Fruits
+                for (int i = 0; i < Fruits.size(); i++)
+                {
+                    //cout << i << ": (" << Fruits[i].TileSprite.SpritePosition.x << ", " << Fruits[i].TileSprite.SpritePosition.y << ")\n";
+                    if(isVisible(Fruits[i], SnakeDude.PlayerCamera))
+                    {
+                        Fruits[i].TileSprite.DrawSpritePro(
+                            (Vector2){Fruits[i].TileSprite.SpritePosition.x,
+                                    Fruits[i].TileSprite.SpritePosition.y},
+                            (Vector2){ MAP_TILE_SIZE, MAP_TILE_SIZE },
+                            (Vector2){ (float)0, (float)0 }, 0.0f
+                        );
+                    }
+                }
+
                 //Player's Texture
                 DrawRectangleV((SnakeDude.PlayerPosition), (Vector2){PLAYER_SIZE, PLAYER_SIZE}, RED);
                 //Fog of War Texture
