@@ -11,5 +11,6 @@ class Animation{
         void PlayLoop(Sprite &TargetSprite); /* Loops indefinetly */
         void PlayOnce(Sprite &TargetSprite);
         void StopAt(Sprite &TargetSprite, int Frame); /* Stop at x Frame */
+        void RangeOfFrame(Sprite &TargetSprite, int StartFrame, int EndFrame);
         //void ResetSpriteFC()
 };

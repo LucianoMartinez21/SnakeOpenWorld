@@ -17,6 +17,7 @@ void CheckCoalition(Tile &Object, Player &Dude)
         {
             Dude.Score += Aux->Score;
             Aux->hasBeingUsed = true;
+            Dude.TailLen += 1;
         }
     }
 

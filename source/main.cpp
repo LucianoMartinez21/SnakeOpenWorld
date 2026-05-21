@@ -19,12 +19,14 @@ int main(void)
     //Initialization of Player and Camera settings
     Player SnakeDude;
     SnakeDude.SetPlayerPos(SCREENW/2, SCREENH/2);
-    SnakeDude.PlayerTileX = 0;
-    SnakeDude.PlayerTileY = 0;
+    SnakeDude.PlayerTileX = (SCREENW/2)/MAP_TILE_SIZE;
+    SnakeDude.PlayerTileY = (SCREENH/2)/MAP_TILE_SIZE;
     SnakeDude.SetCamTarget((float) SnakeDude.PlayerPosition.x + PLAYER_SIZE / 2,(float) SnakeDude.PlayerPosition.y + PLAYER_SIZE / 2);
     SnakeDude.InitCamOffset();
     SnakeDude.SetCamRotation(0);
     SnakeDude.SetCamZoom(2.0f);
+    SnakeDude.PlayerSprite = Sprite("resource/SnakeTiles.png", SCREENW/2, SCREENH/2, 10);
+    //Fruits[i].TileSprite = Sprite("resource/FruitTiles.png", Fruits[i].TileX * MAP_TILE_SIZE, Fruits[i].TileY * MAP_TILE_SIZE, 10);
 
     //Declare Map Tiles
     Map MainMap;
@@ -108,8 +110,8 @@ int main(void)
         //Previous visited Tiles are set to parcial fog
         for (unsigned int i = 0; i < MainMap.TileX*MainMap.TileY; i++) if (MainMap.TileFog[i] == 1) MainMap.TileFog[i] = 2;
         //Stablish the Player's Tile coord. Relative to it's Vec2 Position.
-        SnakeDude.PlayerTileX = (int)((SnakeDude.PlayerPosition.x + PLAYER_SIZE/2 + (float) MAP_TILE_SIZE/2)/MAP_TILE_SIZE);
-        SnakeDude.PlayerTileY = (int)((MainMap.TileY) - (SnakeDude.PlayerPosition.y + (float)MAP_TILE_SIZE / 2) / MAP_TILE_SIZE);
+        //SnakeDude.PlayerTileX = (int)((SnakeDude.PlayerPosition.x + PLAYER_SIZE/2 + (float) MAP_TILE_SIZE/2)/MAP_TILE_SIZE);
+        //SnakeDude.PlayerTileY = (int)((MainMap.TileY) - (SnakeDude.PlayerPosition.y + (float)MAP_TILE_SIZE / 2) / MAP_TILE_SIZE);
         int MetaPlayerTileX, MetaPlayerTileY;
         MetaPlayerTileX = SnakeDude.PlayerTileX/8;
         MetaPlayerTileY = SnakeDude.PlayerTileY/8;
@@ -149,8 +151,9 @@ int main(void)
                 for (int i = 0; i < Fruits.size(); i++)
                 {
                     CheckCoalition(Fruits[i], SnakeDude);
-                    //cout << i << ": (" << Fruits[i].TileSprite.SpritePosition.x << ", " << Fruits[i].TileSprite.SpritePosition.y << ")\n";
-                    if(!Fruits[i].hasBeingUsed && isVisible(Fruits[i], SnakeDude.PlayerCamera))
+                    if(Fruits[i].hasBeingUsed)
+                        continue;
+                    if(isVisible(Fruits[i], SnakeDude.PlayerCamera))
                     {
                         Fruits[i].TileSprite.DrawSpritePro(
                             (Vector2){Fruits[i].TileSprite.SpritePosition.x,
@@ -162,7 +165,8 @@ int main(void)
                 }
 
                 //Player's Texture
-                DrawRectangleV((SnakeDude.PlayerPosition), (Vector2){PLAYER_SIZE, PLAYER_SIZE}, RED);
+                //DrawRectangleV((SnakeDude.PlayerPosition), (Vector2){PLAYER_SIZE, PLAYER_SIZE}, RED);
+                SnakeDude.DrawPlayer();
                 //Fog of War Texture
                 DrawTexturePro( FogOfWar.texture,
                                 (Rectangle){ 0, 0, (float)FogOfWar.texture.width, (float)FogOfWar.texture.height },

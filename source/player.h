@@ -35,11 +35,12 @@ class Player{
         void CheckMapLimits(Map &Mapa);
         void CheckCoalition(); //Coalition of the player and a wall or itself
         void ControllerHandler();
+        void DrawPlayer();
+        //void AddTail();
         //void InadequateEnviroment(); //Harsh conditions of the enviroment will start slowly killing the player
         //void PositiveCoalition(AppleTile Fruit);
 
         //Inventory
-
 
         //Public Vars
         Vector2 PlayerPosition;
@@ -50,11 +51,13 @@ class Player{
         bool IsDead = false;
         int TailLen = 0;
         Vector2 Tail[100];
-        //Sprite PlayerSprite;
+        Sprite PlayerSprite;
         short Life = 100;
         short Score = 0;
     private:
         std::vector<uint8_t> Inventory;
+        void OffsetTail(Vector2 &TailPosition);
+        void OffsetTail(Vector2 &TailPosition, Vector2 NewestPosition);
 };
  /*
   * Explication of Life

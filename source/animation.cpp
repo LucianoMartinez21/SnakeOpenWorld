@@ -41,3 +41,14 @@ void Animation::StopAt(Sprite &TargetSprite, int Frame)
         }
     }
 }
+void Animation::RangeOfFrame(Sprite &TargetSprite, int StartFrame, int EndFrame)
+{
+    TargetSprite.FrameCounter = StartFrame;
+    if (TargetSprite.FrameCounter >= (60/FramesSpeed))
+    {
+        TargetSprite.FrameCounter++;
+        if (TargetSprite.FrameCounter > EndFrame)
+            TargetSprite.FrameCounter = StartFrame;
+        TargetSprite.FrameRectangle.x = (float)TargetSprite.FrameCounter * TargetSprite.SpriteTexture.width/TargetSprite.LengthFrame;
+    }
+}

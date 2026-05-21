@@ -1,7 +1,11 @@
 #include "player.h"
+#include "animation.h"
+#include "global.h"
+#include "sprite.h"
+#include <iostream>
 #include <raylib.h>
 
-Player::Player() //: PlayerSprite("", 0, 0, 0)
+Player::Player() : PlayerSprite("", 0, 0, 0)
 {
 }
 
@@ -44,16 +48,73 @@ void Player::UpdateMovement()
 {
     Vector2 PreviousPosition = Tail[0];
     Vector2 PreviousPositionAux;
-    Tail[0] = PlayerPosition;
+    Tail[0] = {(float)PlayerTileX*MAP_TILE_SIZE, (float)YInvertedFix(PlayerTileY, 64)*MAP_TILE_SIZE}; //PlayerPosition;
+    //Tail[0].x = PlayerPosition.x - MAP_TILE_SIZE;
+    //Tail[0].y = PlayerPosition.y - MAP_TILE_SIZE;
+    //OffsetTail(Tail[0]);
+    //Tail[0] = PlayerPosition;
     PlayerPosition = {PlayerPosition.x + PlayerSpeed.x, PlayerPosition.y + PlayerSpeed.y};
-    for(int index = 1; index < TailLen; index++)
+    //std::cout << "Speed: " << PlayerSpeed.x << ", " << PlayerSpeed.y << std::endl;
+    //std::cout << "PositionTile: " << PlayerTileX << ", " << PlayerTileY << std::endl;
+    for(int index = 0; index < TailLen; index++)
     {
+        std::cout << index << ": " << Tail[index].x << ", " << Tail[index].y << std::endl;
         PreviousPositionAux = Tail[index];
+        //OffsetTail(Tail[index], PreviousPosition);
         Tail[index] = PreviousPosition;
         PreviousPosition = PreviousPositionAux;
     }
+    PlayerTileX = ((int)((PlayerPosition.x + PLAYER_SIZE/2 + (float) MAP_TILE_SIZE/2) / MAP_TILE_SIZE));
+    PlayerTileY = ((int)((64) - (PlayerPosition.y + (float)MAP_TILE_SIZE / 2) / MAP_TILE_SIZE));
 }
 
+void Player::OffsetTail(Vector2 &TailPosition)
+{
+    if (PlayerSpeed.x == 1.0f &&  PlayerSpeed.y == 0.0f)
+    {
+        TailPosition.x = PlayerPosition.x - 32;
+        TailPosition.y = PlayerPosition.y;
+    }
+    if (PlayerSpeed.x == -1.0f &&  PlayerSpeed.y == 0.0f)
+    {
+        TailPosition.x = PlayerPosition.x + 32;
+        TailPosition.y = PlayerPosition.y;
+    }
+    if (PlayerSpeed.x == 0.0f &&  PlayerSpeed.y == -1.0f)
+    {
+        TailPosition.x = PlayerPosition.x;
+        TailPosition.y = PlayerPosition.y + 32;
+    }
+    if (PlayerSpeed.x == 0.0f &&  PlayerSpeed.y == 1.0f)
+    {
+        TailPosition.x = PlayerPosition.x;
+        TailPosition.y = PlayerPosition.y - 32;
+    }
+
+}
+void Player::OffsetTail(Vector2 &TailPosition, Vector2 NewestPosition)
+{
+    if (PlayerSpeed.x == 1.0f &&  PlayerSpeed.y == 0.0f)
+    {
+        TailPosition.x = NewestPosition.x - 32;
+        TailPosition.y = NewestPosition.y;
+    }
+    if (PlayerSpeed.x == -1.0f &&  PlayerSpeed.y == 0.0f)
+    {
+        TailPosition.x = NewestPosition.x + 32;
+        TailPosition.y = NewestPosition.y;
+    }
+    if (PlayerSpeed.x == 0.0f &&  PlayerSpeed.y == -1.0f)
+    {
+        TailPosition.x = NewestPosition.x;
+        TailPosition.y = NewestPosition.y + 32;
+    }
+    if (PlayerSpeed.x == 0.0f &&  PlayerSpeed.y == 1.0f)
+    {
+        TailPosition.x = NewestPosition.x;
+        TailPosition.y = NewestPosition.y - 32;
+    }
+}
 void Player::CheckMapLimits(Map &Mapa)
 {
     if (PlayerPosition.x < 0) PlayerPosition.x = 0;
@@ -83,10 +144,38 @@ void Player::CheckCoalition() //Checks the Coalition of the player and itself
 
 void Player::ControllerHandler()
 {
-    if (IsKeyDown(KEY_RIGHT))   {SetPlayerSpeed(4.5f, 0.0f);}
+    /*if (IsKeyDown(KEY_RIGHT))   {SetPlayerSpeed(4.5f, 0.0f);}
     if (IsKeyDown(KEY_LEFT))    {SetPlayerSpeed(-4.5f, 0.0f);}
     if (IsKeyDown(KEY_UP))      {SetPlayerSpeed(0.0f, -4.5f);}
-    if (IsKeyDown(KEY_DOWN))    {SetPlayerSpeed(0.0f, 4.5f);}
+    if (IsKeyDown(KEY_DOWN))    {SetPlayerSpeed(0.0f, 4.5f);}*/
+    //std::cout << PlayerSpeed.x << ", " << PlayerSpeed.y << std::endl;
+    if (IsKeyDown(KEY_RIGHT))   {SetPlayerSpeed(1.0f, 0.0f);}
+    if (IsKeyDown(KEY_LEFT))    {SetPlayerSpeed(-1.0f, 0.0f);}
+    if (IsKeyDown(KEY_UP))      {SetPlayerSpeed(0.0f, -1.0f);}
+    if (IsKeyDown(KEY_DOWN))    {SetPlayerSpeed(0.0f, 1.0f);}
 }
 
 //void Draw tiles()
+short TailFrame = 1;
+void Player::DrawPlayer()
+{
+    PlayerSprite.ChangeFrame(0);
+    PlayerSprite.DrawSpritePro(PlayerPosition, { MAP_TILE_SIZE, MAP_TILE_SIZE }, {0,0}, 0.0f);
+    Sprite Tails = PlayerSprite;
+    Animation Animplayer;
+    for(int Index = 1; Index <= TailLen; Index++)
+    {
+        if(Index != TailLen)
+        {
+            //Animplayer.PlayLoop(Tails);
+            //std::cout << TailFrame << std::endl;
+            if(TailFrame > 2)
+                TailFrame = 1;
+            Tails.ChangeFrame(TailFrame);
+            TailFrame++;
+        }
+        else
+            Tails.ChangeFrame(3);
+        Tails.DrawSpritePro(Tail[Index], { MAP_TILE_SIZE, MAP_TILE_SIZE }, {0,0}, 0.0f);
+    }
+}
