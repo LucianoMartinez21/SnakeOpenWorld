@@ -13,6 +13,7 @@ class Tile{
         int TileX, TileY;
         //bool CanKill;
         bool IsHarsh;
+        bool hasBeingUsed = false;
         Sprite TileSprite;
         Tile();
         void SetRangeEffect(Rectangle Area);
@@ -20,6 +21,7 @@ class Tile{
         Rectangle GetRange();
         void Killzone(Player &Dude);
         bool IsInRange(Player &Dude);
+        virtual ~Tile() {}
     private:
         bool IsPlayerInRange;
         Rectangle RangeOfEffect;
@@ -64,3 +66,5 @@ void DrawShallowWaters(int x, int y, Tile &ShallowWater);
 void DrawDesert(int x, int y, Tile &Sand);
 bool RayCastPolygon(Vector2 Position, Polygon &Poly);
 bool isVisible(Tile Object, Camera2D MainCam);
+
+void LoadTilesLocations(Tile);

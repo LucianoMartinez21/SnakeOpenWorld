@@ -33,7 +33,7 @@ class Player{
         void SetPlayerSpeed(float x, float y);
         void UpdateMovement();
         void CheckMapLimits(Map &Mapa);
-        void Coalition(); //Coalition of the player and a wall or itself
+        void CheckCoalition(); //Coalition of the player and a wall or itself
         void ControllerHandler();
         //void InadequateEnviroment(); //Harsh conditions of the enviroment will start slowly killing the player
         //void PositiveCoalition(AppleTile Fruit);
@@ -52,6 +52,7 @@ class Player{
         Vector2 Tail[100];
         //Sprite PlayerSprite;
         short Life = 100;
+        short Score = 0;
     private:
         std::vector<uint8_t> Inventory;
 };

@@ -70,7 +70,7 @@ void Player::CheckCameraMapLimits()
     if (PlayerCamera.target.y > 2016 - ((SCREENH/PlayerCamera.zoom)/2)) PlayerCamera.target.y = (float)(2016 - (SCREENH/PlayerCamera.zoom) / 2);
 }
 
-void Player::Coalition() //Checks the Coalition of the player and itself
+void Player::CheckCoalition() //Checks the Coalition of the player and itself
 {
     for(int i = 0; i < TailLen; i++)
     {

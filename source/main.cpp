@@ -9,6 +9,7 @@
 #include "grid.h"
 #include <iostream>
 #include <vector>
+#include "conflict.h"
 using namespace std;
 
 int main(void)
@@ -58,6 +59,7 @@ int main(void)
         Fruits[i].IsHarsh = false;
         Fruits[i].TileX = 1 + i;
         Fruits[i].TileY = 1 + i;
+        Fruits[i].hasBeingUsed = false;
         Fruits[i].TileSprite = Sprite("resource/FruitTiles.png", Fruits[i].TileX * MAP_TILE_SIZE, Fruits[i].TileY * MAP_TILE_SIZE, 10);
         Fruits[i].Score = 5;
         //TODO: Add the range of effect to world tiles.
@@ -130,6 +132,7 @@ int main(void)
             BeginMode2D(SnakeDude.PlayerCamera);
                 //Example square
                 //DrawRectangleV((Vector2){40,50}, {50,50}, PURPLE);
+
                 //Drawing the world
                 for(unsigned int y = 0; y < MainMap.TileY; y++)
                 {
@@ -145,8 +148,9 @@ int main(void)
                 //Draw Fruits
                 for (int i = 0; i < Fruits.size(); i++)
                 {
+                    CheckCoalition(Fruits[i], SnakeDude);
                     //cout << i << ": (" << Fruits[i].TileSprite.SpritePosition.x << ", " << Fruits[i].TileSprite.SpritePosition.y << ")\n";
-                    if(isVisible(Fruits[i], SnakeDude.PlayerCamera))
+                    if(!Fruits[i].hasBeingUsed && isVisible(Fruits[i], SnakeDude.PlayerCamera))
                     {
                         Fruits[i].TileSprite.DrawSpritePro(
                             (Vector2){Fruits[i].TileSprite.SpritePosition.x,
@@ -172,6 +176,7 @@ int main(void)
             DrawText(TextFormat("Current tile: [%i,%i]", SnakeDude.PlayerTileX, YInvertedFix(SnakeDude.PlayerTileY, MainMap.TileY)), 10, 10, 20, RAYWHITE);
             DrawText(TextFormat("Current position: [%f,%f]", SnakeDude.PlayerPosition.x, SnakeDude.PlayerPosition.y), 10, 30, 20, RAYWHITE);
             DrawText(TextFormat("Current metatile: [%i,%i]", MetaPlayerTileX, YInvertedFix(MetaPlayerTileY, MetaMap.MTileY)), 10, 50, 20, RAYWHITE);
+            DrawText(TextFormat("Current Score: [%i]", SnakeDude.Score), 10, 70, 20, RAYWHITE);
             //DrawText(TextFormat("Is Player in WorldTile 0: [%b]", World[0].IsInRange(SnakeDude)), 10, 50, 20, RAYWHITE);
             //DrawText(TextFormat("Is Player in WorldTile 1: [%b]", World[1].IsInRange(SnakeDude)), 10, 70, 20, RAYWHITE);
             //DrawText(TextFormat("Is Player in WorldTile 2: [%b]", World[2].IsInRange(SnakeDude)), 10, 90, 20, RAYWHITE);
