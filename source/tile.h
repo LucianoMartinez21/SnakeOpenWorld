@@ -67,4 +67,4 @@ void DrawDesert(int x, int y, Tile &Sand);
 bool RayCastPolygon(Vector2 Position, Polygon &Poly);
 bool isVisible(Tile Object, Camera2D MainCam);
 
-void LoadTilesLocations(Tile);
+void LoadTilesLocations(std::vector<Tile> &TileObjects, bool IsHarsh, int frame, Vector2 Locations[]);

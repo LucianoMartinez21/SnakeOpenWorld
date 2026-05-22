@@ -36,9 +36,6 @@ class Player{
         void CheckCoalition(); //Coalition of the player and a wall or itself
         void ControllerHandler();
         void DrawPlayer();
-        //void AddTail();
-        //void InadequateEnviroment(); //Harsh conditions of the enviroment will start slowly killing the player
-        //void PositiveCoalition(AppleTile Fruit);
 
         //Inventory
 

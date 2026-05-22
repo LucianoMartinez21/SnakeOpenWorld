@@ -7,6 +7,7 @@
 #include <cstdio>
 #include <ctime>
 #include <iostream>
+#include <iterator>
 #include <list>
 #include <raylib.h>
 
@@ -340,4 +341,15 @@ bool isVisible(Tile Object, Camera2D MainCam)
         (Object.TileX*MAP_TILE_SIZE) < BottomRight.x &&
         (Object.TileY*MAP_TILE_SIZE) + MAP_TILE_SIZE > TopLeft.y &&
         (Object.TileY*MAP_TILE_SIZE) < BottomRight.y;
+}
+
+void LoadTilesLocations(std::vector<Tile> &TileObjects, bool IsHarsh, int frame, Vector2 Locations[])
+{
+    for(int i = 0; i < (sizeof(Locations) / sizeof(Locations[0])); i++)
+    {
+        TileObjects[i].IsHarsh = IsHarsh;
+        TileObjects[i].TileSprite = Sprite("resource/WorldTile.png", (float)0, (float) 0, 10);
+        TileObjects[i].TileSprite.ChangeFrame(frame);
+    }
+
 }

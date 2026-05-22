@@ -10,7 +10,6 @@ void CheckCoalition(Tile &Object, Player &Dude)
     int YPlayer = YInvertedFix(Dude.PlayerTileY, 64);
     if(Object.TileX == Dude.PlayerTileX && Object.TileY == YPlayer)
     {
-        std::cout << "hola2";
         if(Object.IsHarsh)
             Dude.IsDead = true;
         else

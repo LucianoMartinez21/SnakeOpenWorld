@@ -46,78 +46,40 @@ void Player::SetPlayerSpeed(float x, float y)
 
 void Player::UpdateMovement()
 {
-    Vector2 PreviousPosition = Tail[0];
-    Vector2 PreviousPositionAux;
-    Tail[0] = {(float)PlayerTileX*MAP_TILE_SIZE, (float)YInvertedFix(PlayerTileY, 64)*MAP_TILE_SIZE}; //PlayerPosition;
-    //Tail[0].x = PlayerPosition.x - MAP_TILE_SIZE;
-    //Tail[0].y = PlayerPosition.y - MAP_TILE_SIZE;
-    //OffsetTail(Tail[0]);
-    //Tail[0] = PlayerPosition;
-    PlayerPosition = {PlayerPosition.x + PlayerSpeed.x, PlayerPosition.y + PlayerSpeed.y};
-    //std::cout << "Speed: " << PlayerSpeed.x << ", " << PlayerSpeed.y << std::endl;
-    //std::cout << "PositionTile: " << PlayerTileX << ", " << PlayerTileY << std::endl;
+    Vector2 PreviousPosition = {(float)PlayerTileX*MAP_TILE_SIZE, (float)(63 - PlayerTileY) * MAP_TILE_SIZE};
+
+    const float MOVE_DELAY = 0.07f;
+    static float MoveTimer = 0.0f;
+    MoveTimer += GetFrameTime();
+
+    if(MoveTimer < MOVE_DELAY) return ;
+    MoveTimer = 0;
+
+    PlayerPosition.x = PlayerTileX * MAP_TILE_SIZE;
+    PlayerPosition.y = (63 - PlayerTileY) * MAP_TILE_SIZE;
+
+    if (PlayerSpeed.x > 0) PlayerTileX += 1;
+    if (PlayerSpeed.x < 0) PlayerTileX -= 1;
+    if (PlayerSpeed.y > 0) PlayerTileY -= 1;
+    if (PlayerSpeed.y < 0) PlayerTileY += 1;
+
+    PlayerTileX = std::max(0, std::min(PlayerTileX, 96 - 1));
+    PlayerTileY = std::max(0, std::min(PlayerTileY, 64 - 1));
+
+
+    std::cout << "Player:" << PlayerTileX << ", " << PlayerTileY << std::endl;
+    std::cout << 0 << ": " << Tail[0].x / MAP_TILE_SIZE << ", " << Tail[0].y / MAP_TILE_SIZE << std::endl;
     for(int index = 0; index < TailLen; index++)
     {
-        std::cout << index << ": " << Tail[index].x << ", " << Tail[index].y << std::endl;
-        PreviousPositionAux = Tail[index];
-        //OffsetTail(Tail[index], PreviousPosition);
+        Vector2 PreviousPositionAux = Tail[index];
         Tail[index] = PreviousPosition;
         PreviousPosition = PreviousPositionAux;
     }
-    PlayerTileX = ((int)((PlayerPosition.x + PLAYER_SIZE/2 + (float) MAP_TILE_SIZE/2) / MAP_TILE_SIZE));
-    PlayerTileY = ((int)((64) - (PlayerPosition.y + (float)MAP_TILE_SIZE / 2) / MAP_TILE_SIZE));
 }
 
-void Player::OffsetTail(Vector2 &TailPosition)
-{
-    if (PlayerSpeed.x == 1.0f &&  PlayerSpeed.y == 0.0f)
-    {
-        TailPosition.x = PlayerPosition.x - 32;
-        TailPosition.y = PlayerPosition.y;
-    }
-    if (PlayerSpeed.x == -1.0f &&  PlayerSpeed.y == 0.0f)
-    {
-        TailPosition.x = PlayerPosition.x + 32;
-        TailPosition.y = PlayerPosition.y;
-    }
-    if (PlayerSpeed.x == 0.0f &&  PlayerSpeed.y == -1.0f)
-    {
-        TailPosition.x = PlayerPosition.x;
-        TailPosition.y = PlayerPosition.y + 32;
-    }
-    if (PlayerSpeed.x == 0.0f &&  PlayerSpeed.y == 1.0f)
-    {
-        TailPosition.x = PlayerPosition.x;
-        TailPosition.y = PlayerPosition.y - 32;
-    }
-
-}
-void Player::OffsetTail(Vector2 &TailPosition, Vector2 NewestPosition)
-{
-    if (PlayerSpeed.x == 1.0f &&  PlayerSpeed.y == 0.0f)
-    {
-        TailPosition.x = NewestPosition.x - 32;
-        TailPosition.y = NewestPosition.y;
-    }
-    if (PlayerSpeed.x == -1.0f &&  PlayerSpeed.y == 0.0f)
-    {
-        TailPosition.x = NewestPosition.x + 32;
-        TailPosition.y = NewestPosition.y;
-    }
-    if (PlayerSpeed.x == 0.0f &&  PlayerSpeed.y == -1.0f)
-    {
-        TailPosition.x = NewestPosition.x;
-        TailPosition.y = NewestPosition.y + 32;
-    }
-    if (PlayerSpeed.x == 0.0f &&  PlayerSpeed.y == 1.0f)
-    {
-        TailPosition.x = NewestPosition.x;
-        TailPosition.y = NewestPosition.y - 32;
-    }
-}
 void Player::CheckMapLimits(Map &Mapa)
 {
-    if (PlayerPosition.x < 0) PlayerPosition.x = 0;
+    if (PlayerPosition.x < 0 + PLAYER_SIZE) PlayerPosition.x = 0;
     else if ((PlayerPosition.x + PLAYER_SIZE) > Mapa.TileX*MAP_TILE_SIZE) PlayerPosition.x = (float)Mapa.TileX*MAP_TILE_SIZE - PLAYER_SIZE;
     if (PlayerPosition.y < 0) PlayerPosition.y = 0;
     else if ((PlayerPosition.y + PLAYER_SIZE) > Mapa.TileY*MAP_TILE_SIZE) PlayerPosition.y = (float)Mapa.TileY*MAP_TILE_SIZE - PLAYER_SIZE;
@@ -135,7 +97,7 @@ void Player::CheckCoalition() //Checks the Coalition of the player and itself
 {
     for(int i = 0; i < TailLen; i++)
     {
-        if(Tail[i].x == PlayerPosition.x and Tail[i].y == PlayerPosition.y)
+        if(Tail[i].x / MAP_TILE_SIZE == PlayerTileX and Tail[i].y / MAP_TILE_SIZE == (63 - PlayerTileY))
             IsDead = true;
     }
 }
@@ -144,11 +106,6 @@ void Player::CheckCoalition() //Checks the Coalition of the player and itself
 
 void Player::ControllerHandler()
 {
-    /*if (IsKeyDown(KEY_RIGHT))   {SetPlayerSpeed(4.5f, 0.0f);}
-    if (IsKeyDown(KEY_LEFT))    {SetPlayerSpeed(-4.5f, 0.0f);}
-    if (IsKeyDown(KEY_UP))      {SetPlayerSpeed(0.0f, -4.5f);}
-    if (IsKeyDown(KEY_DOWN))    {SetPlayerSpeed(0.0f, 4.5f);}*/
-    //std::cout << PlayerSpeed.x << ", " << PlayerSpeed.y << std::endl;
     if (IsKeyDown(KEY_RIGHT))   {SetPlayerSpeed(1.0f, 0.0f);}
     if (IsKeyDown(KEY_LEFT))    {SetPlayerSpeed(-1.0f, 0.0f);}
     if (IsKeyDown(KEY_UP))      {SetPlayerSpeed(0.0f, -1.0f);}
@@ -156,26 +113,14 @@ void Player::ControllerHandler()
 }
 
 //void Draw tiles()
-short TailFrame = 1;
 void Player::DrawPlayer()
 {
     PlayerSprite.ChangeFrame(0);
     PlayerSprite.DrawSpritePro(PlayerPosition, { MAP_TILE_SIZE, MAP_TILE_SIZE }, {0,0}, 0.0f);
     Sprite Tails = PlayerSprite;
-    Animation Animplayer;
-    for(int Index = 1; Index <= TailLen; Index++)
+    for(int Index = 0; Index <= TailLen; Index++)
     {
-        if(Index != TailLen)
-        {
-            //Animplayer.PlayLoop(Tails);
-            //std::cout << TailFrame << std::endl;
-            if(TailFrame > 2)
-                TailFrame = 1;
-            Tails.ChangeFrame(TailFrame);
-            TailFrame++;
-        }
-        else
-            Tails.ChangeFrame(3);
+        Tails.ChangeFrame(1);
         Tails.DrawSpritePro(Tail[Index], { MAP_TILE_SIZE, MAP_TILE_SIZE }, {0,0}, 0.0f);
     }
 }

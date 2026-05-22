@@ -10,6 +10,7 @@
 #include <iostream>
 #include <vector>
 #include "conflict.h"
+#include "tilelocation.h"
 using namespace std;
 
 int main(void)
@@ -25,7 +26,7 @@ int main(void)
     SnakeDude.InitCamOffset();
     SnakeDude.SetCamRotation(0);
     SnakeDude.SetCamZoom(2.0f);
-    SnakeDude.PlayerSprite = Sprite("resource/SnakeTiles.png", SCREENW/2, SCREENH/2, 10);
+    SnakeDude.PlayerSprite = Sprite("resource/SnakeTilesAlt.png", SCREENW/2, SCREENH/2, 10);
     //Fruits[i].TileSprite = Sprite("resource/FruitTiles.png", Fruits[i].TileX * MAP_TILE_SIZE, Fruits[i].TileY * MAP_TILE_SIZE, 10);
 
     //Declare Map Tiles
@@ -49,6 +50,7 @@ int main(void)
     //Declare a World Tile
     vector <Tile> World;
     vector <AppleTile> Fruits;
+    vector <Tile> Corals;
     //Grid WorldGrid;
     for(int i = 0; i <= 4; i++)
     {
@@ -57,15 +59,16 @@ int main(void)
         World[i].TileSprite = Sprite("resource/WorldTile.png", (float)0, (float) 0, 10);
         //World[i].SetRangeEffect(InitRanges(i));
         World[i].TileSprite.ChangeFrame(i);
-        Fruits.push_back(AppleTile());
+        /*Fruits.push_back(AppleTile());
         Fruits[i].IsHarsh = false;
         Fruits[i].TileX = 1 + i;
         Fruits[i].TileY = 1 + i;
         Fruits[i].hasBeingUsed = false;
         Fruits[i].TileSprite = Sprite("resource/FruitTiles.png", Fruits[i].TileX * MAP_TILE_SIZE, Fruits[i].TileY * MAP_TILE_SIZE, 10);
-        Fruits[i].Score = 5;
+        Fruits[i].Score = 5;*/
         //TODO: Add the range of effect to world tiles.
     }
+    LoadTilesLocations(Corals, true, 0, CoralLocations);
     World[2].SetRangeEffect(
         {
             (Vector2){0 * MAP_TILE_SIZE, 0 * MAP_TILE_SIZE},
@@ -89,14 +92,10 @@ int main(void)
 
     while(!WindowShouldClose())
     {
-        //World[2].IsInRange(SnakeDude);
-        //while (SnakeDude.IsDead == true) {}
         //Handles The Movement and Camera following
         SnakeDude.ControllerHandler();
         SnakeDude.UpdateMovement();
         SnakeDude.FollowTarget();
-
-        //Check if the player is in range of objects in the grid
 
         //Player's Limits in the map
         SnakeDude.CheckMapLimits(MainMap);
@@ -104,20 +103,19 @@ int main(void)
         //Camera's Limits in the map
         SnakeDude.CheckCameraMapLimits();
 
-        //Check if the player is in the range
-        //World[0].Killzone(SnakeDude);
-
         //Previous visited Tiles are set to parcial fog
         for (unsigned int i = 0; i < MainMap.TileX*MainMap.TileY; i++) if (MainMap.TileFog[i] == 1) MainMap.TileFog[i] = 2;
         //Stablish the Player's Tile coord. Relative to it's Vec2 Position.
-        //SnakeDude.PlayerTileX = (int)((SnakeDude.PlayerPosition.x + PLAYER_SIZE/2 + (float) MAP_TILE_SIZE/2)/MAP_TILE_SIZE);
-        //SnakeDude.PlayerTileY = (int)((MainMap.TileY) - (SnakeDude.PlayerPosition.y + (float)MAP_TILE_SIZE / 2) / MAP_TILE_SIZE);
+        int fogTileX = (int)((SnakeDude.PlayerPosition.x + MAP_TILE_SIZE / 2.0f) / MAP_TILE_SIZE);
+        int fogTileY = (int)((SnakeDude.PlayerPosition.y + MAP_TILE_SIZE / 2.0f) / MAP_TILE_SIZE);
+
         int MetaPlayerTileX, MetaPlayerTileY;
         MetaPlayerTileX = SnakeDude.PlayerTileX/8;
         MetaPlayerTileY = SnakeDude.PlayerTileY/8;
+
         //Checks Visibility and update the fog
         // TODO: Make it a function.
-        UpdateVision(SnakeDude.PlayerTileX, SnakeDude.PlayerTileY, MainMap);
+        UpdateVision(fogTileX, 63-fogTileY, MainMap);
 
         //Screen Draws
         BeginTextureMode(FogOfWar);
@@ -132,9 +130,6 @@ int main(void)
             ClearBackground(RAYWHITE);
             //Draws relative to the Player's Camera
             BeginMode2D(SnakeDude.PlayerCamera);
-                //Example square
-                //DrawRectangleV((Vector2){40,50}, {50,50}, PURPLE);
-
                 //Drawing the world
                 for(unsigned int y = 0; y < MainMap.TileY; y++)
                 {
@@ -151,6 +146,7 @@ int main(void)
                 for (int i = 0; i < Fruits.size(); i++)
                 {
                     CheckCoalition(Fruits[i], SnakeDude);
+                    SnakeDude.CheckCoalition();
                     if(Fruits[i].hasBeingUsed)
                         continue;
                     if(isVisible(Fruits[i], SnakeDude.PlayerCamera))
