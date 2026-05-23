@@ -1,5 +1,8 @@
 #include "init.h"
 #include "core.h"
+#include "global.h"
+#include <raylib.h>
+#include <string>
 
 Player SnakeDude;
 Map MainMap;
@@ -20,6 +23,10 @@ void InitCore()
     SnakeDude.SetCamRotation(0);
     SnakeDude.SetCamZoom(2.0f);
     SnakeDude.PlayerSprite = Sprite("resource/SnakeTilesAlt.png", SCREENW/2, SCREENH/2, 10);
+    SnakeDude.IsDead = false;
+    SnakeDude.Score = 0;
+    SnakeDude.Life = 100;
+    SnakeDude.TailLen = 0;
     //Fruits[i].TileSprite = Sprite("resource/FruitTiles.png", Fruits[i].TileX * MAP_TILE_SIZE, Fruits[i].TileY * MAP_TILE_SIZE, 10);
 
     //Declare Map Tiles
@@ -40,7 +47,8 @@ void InitCore()
     SetTextureWrap(FogOfWar.texture, TEXTURE_WRAP_CLAMP);
 
     //Declare a World Tile
-
+    World.clear();
+    Obstacles.clear();
     for(int i = 0; i <= 4; i++)
     {
         World.push_back(Tile());
@@ -82,4 +90,65 @@ void InitCore()
     World[0].IsHarsh = true;
     World[2].IsHarsh = true;
     World[3].IsHarsh = true;
+}
+
+int SHeightLoc;
+int AmplitudLoc;
+int FrequencyLoc;
+int SpeedLoc;
+int AmplitudVertLoc;
+int FrequencyVertLoc;
+int SpeedVertLoc;
+int ScrollDirLoc;
+int ScrollSpeedLoc;
+int EnablePaletteLoc;
+int PaletteLoc;
+int PaletteSpeedLoc;
+Shader ShaderBackground;
+Texture2D MainMenu;
+int LocTime;
+
+void InitShader()
+{
+    MainMenu = LoadTexture("resource/MainMenu.png");
+    ShaderBackground = LoadShader(0, "shaders/eb.fs");
+    LocTime =           GetShaderLocation(ShaderBackground, "TIME");
+    SHeightLoc =        GetShaderLocation(ShaderBackground, "screen_height");
+    AmplitudLoc =       GetShaderLocation(ShaderBackground, "amplitude");
+    FrequencyLoc =      GetShaderLocation(ShaderBackground, "frequency");
+    SpeedLoc =          GetShaderLocation(ShaderBackground, "speed");
+    AmplitudVertLoc =   GetShaderLocation(ShaderBackground, "amplitude_vertical");
+    FrequencyVertLoc =  GetShaderLocation(ShaderBackground, "frequency_vertical");
+    SpeedVertLoc =      GetShaderLocation(ShaderBackground, "speed_vertical");
+    ScrollDirLoc =      GetShaderLocation(ShaderBackground, "scroll_direction");
+    ScrollSpeedLoc =    GetShaderLocation(ShaderBackground, "scrolling_speed");
+    EnablePaletteLoc =  GetShaderLocation(ShaderBackground, "enable_palette_cycling");
+    PaletteLoc =        GetShaderLocation(ShaderBackground, "palette");
+    PaletteSpeedLoc =   GetShaderLocation(ShaderBackground, "palette_speed");
+
+    float Screen                = SCREENH;
+    float Amplitud              = 0.08f;
+    float Frequency             = 10.0f;
+    float Speed                 = 2.0f;
+    float AmplitudVertical      = 0.0f;
+    float FrequencyVertical     = 0.0f;
+    float SpeedVertical         = 0.0f;
+    float ScrollDirection[2]    = {0.0f,0.0f};
+    float ScrollSpeed           = 0.08f;
+    int EnablePalette           = 0; // 1 means true, 0 means false
+    float PaletteSpeed          = 0.1f;
+
+    SetShaderValue(ShaderBackground, SHeightLoc, &Screen, SHADER_UNIFORM_FLOAT);
+    SetShaderValue(ShaderBackground, AmplitudLoc, &Amplitud, SHADER_UNIFORM_FLOAT);
+    SetShaderValue(ShaderBackground, FrequencyLoc, &Frequency, SHADER_UNIFORM_FLOAT);
+    SetShaderValue(ShaderBackground, SpeedLoc, &Speed, SHADER_UNIFORM_FLOAT);
+    SetShaderValue(ShaderBackground, AmplitudVertLoc, &AmplitudVertical, SHADER_UNIFORM_FLOAT);
+    SetShaderValue(ShaderBackground, FrequencyVertLoc, &FrequencyVertical, SHADER_UNIFORM_FLOAT);
+    SetShaderValue(ShaderBackground, SpeedVertLoc, &SpeedVertical, SHADER_UNIFORM_FLOAT);
+    SetShaderValue(ShaderBackground, ScrollDirLoc, &ScrollDirection, SHADER_UNIFORM_VEC2);
+    SetShaderValue(ShaderBackground, ScrollSpeedLoc, &ScrollSpeed, SHADER_UNIFORM_FLOAT);
+    SetShaderValue(ShaderBackground, EnablePaletteLoc, &EnablePalette, SHADER_UNIFORM_INT);
+    SetShaderValue(ShaderBackground, PaletteSpeedLoc, &PaletteSpeed, SHADER_UNIFORM_FLOAT);
+
+    SetShaderValueTexture(ShaderBackground, PaletteLoc, MainMenu);
 }

@@ -21,16 +21,57 @@ int main(void)
     InitWindow(SCREENW, SCREENH, "Snake Game");
     //Initialization of Player and Camera settings
     InitCore();
+    InitShader();
     SetTargetFPS(60);
     double lastMoveTime = 0.0;
+    float seconds = 0.0;
+    bool UpDown = false; //false up, true down
     while(!WindowShouldClose())
     {
+        seconds = GetTime();
+        SetShaderValue(ShaderBackground, LocTime, &seconds, SHADER_UNIFORM_FLOAT);
         switch (GameFlow) {
             case MAIN_MENU:
-            BeginDrawing();
-            EndDrawing();
+                BeginDrawing();
+                ClearBackground(BLACK);
+                    BeginShaderMode(ShaderBackground);
+                        DrawTexture(MainMenu, 0, 0, WHITE);
+                        DrawTexture(MainMenu, MainMenu.width, 0, Fade(WHITE, 0));
+                    EndShaderMode();
+                    DrawText("SnakeDude Adventure", (SCREENW/2)-(19*20), SCREENH/2, 20, RAYWHITE);
+                    if(IsKeyPressed(KEY_DOWN) or IsKeyPressed(KEY_UP)) UpDown = !UpDown;
+                    if(UpDown == false)
+                    {
+                        DrawText(">Play", (SCREENW/2)-(19*20), (SCREENH/2)+50, 20, RAYWHITE);
+                        DrawText("Credits", (SCREENW/2)-(19*20), (SCREENH/2)+75, 20, RAYWHITE);
+                        if(IsKeyPressed(KEY_SPACE) || IsKeyPressed(KEY_ENTER))
+                        {
+                            GameFlow = PLAYING;
+                            InitCore();
+                        }
+                    }
+                    else
+                    {
+                        DrawText("Play", (SCREENW/2)-(19*20), (SCREENH/2)+50, 20, RAYWHITE);
+                        DrawText(">Credits", (SCREENW/2)-(19*20), (SCREENH/2)+75, 20, RAYWHITE);
+                        if(IsKeyPressed(KEY_SPACE) || IsKeyPressed(KEY_ENTER))
+                            GameFlow = CREDITS;
+                    }
+                EndDrawing();
                 break;
             case CREDITS:
+                BeginDrawing();
+                ClearBackground(BLACK);
+                    BeginShaderMode(ShaderBackground);
+                        DrawTexture(MainMenu, 0, 0, WHITE);
+                        DrawTexture(MainMenu, MainMenu.width, 0, Fade(WHITE, 0));
+                    EndShaderMode();
+                    DrawText("SnakeDude Adventure", (SCREENW/2)-(19*20), SCREENH/2, 20, RAYWHITE);
+
+                    DrawText(">Back", (SCREENW/2)-(19*20), (SCREENH/2)+50, 20, RAYWHITE);
+                    if(IsKeyPressed(KEY_SPACE) || IsKeyPressed(KEY_ENTER))
+                        GameFlow = MAIN_MENU;
+                EndDrawing();
                 break;
             case PLAYING:
                 //Handles The Movement and Camera following
