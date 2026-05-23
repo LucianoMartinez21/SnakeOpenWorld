@@ -66,5 +66,7 @@ void DrawShallowWaters(int x, int y, Tile &ShallowWater);
 void DrawDesert(int x, int y, Tile &Sand);
 bool RayCastPolygon(Vector2 Position, Polygon &Poly);
 bool isVisible(Tile Object, Camera2D MainCam);
+bool isNear(Vector2 &Location, Camera2D MainCam);
 
-void LoadTilesLocations(std::vector<Tile> &TileObjects, bool IsHarsh, int frame, Vector2 Locations[]);
+void LoadTilesLocations(std::vector<Tile> &TileObjects, bool IsHarsh, int frame, Vector2 Locations[], int ArraySize);
+void LoadAppleTilesLocations(std::vector<AppleTile> &TileObjects, Vector2 Locations[]);

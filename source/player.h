@@ -46,6 +46,7 @@ class Player{
         Vector2 PlayerSpeed;
         DirectionFacing DirFacing;
         bool IsDead = false;
+        bool IsMoving = false;
         int TailLen = 0;
         Vector2 Tail[100];
         Sprite PlayerSprite;

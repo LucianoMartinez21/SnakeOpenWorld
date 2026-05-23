@@ -11,3 +11,10 @@ class Polygon
     public:
         std::pmr::vector<Vector2> Points;
 };
+
+typedef enum GAME_STATE
+{
+    MAIN_MENU,
+    PLAYING,
+    CREDITS
+}GSTATE;

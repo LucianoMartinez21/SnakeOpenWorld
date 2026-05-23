@@ -9,6 +9,7 @@
 #include <iostream>
 #include <iterator>
 #include <list>
+#include <ostream>
 #include <raylib.h>
 
 /*Tile::Tile()
@@ -88,20 +89,20 @@ Rectangle InitRanges(int i)
 {
     Rectangle Area;
     switch (i) {
-        case 0:
-        Area = (Rectangle) {0 * MAP_TILE_SIZE, 0 * MAP_TILE_SIZE, 32 * MAP_TILE_SIZE, 32 * MAP_TILE_SIZE};
+        case 0: //desert
+        Area = (Rectangle) {16 * MAP_TILE_SIZE, 24 * MAP_TILE_SIZE, (48-1) * MAP_TILE_SIZE, (48-1) * MAP_TILE_SIZE};
         break;
-        case 1:
-        Area = (Rectangle) {0 * MAP_TILE_SIZE, 32 * MAP_TILE_SIZE, 32 * MAP_TILE_SIZE, 64 * MAP_TILE_SIZE};
+        case 1: //Shallow Waters
+        //Area = (Rectangle) {0 * MAP_TILE_SIZE, 32 * MAP_TILE_SIZE, 32 * MAP_TILE_SIZE, 64 * MAP_TILE_SIZE};
         break;
         case 2:
-        Area = (Rectangle) {32 * MAP_TILE_SIZE, 0 * MAP_TILE_SIZE, 64 * MAP_TILE_SIZE, 32 * MAP_TILE_SIZE};
+        //Area = (Rectangle) {32 * MAP_TILE_SIZE, 0 * MAP_TILE_SIZE, 64 * MAP_TILE_SIZE, 32 * MAP_TILE_SIZE};
         break;
-        case 3:
-        Area = (Rectangle) {32 * MAP_TILE_SIZE, 32 * MAP_TILE_SIZE, 64 * MAP_TILE_SIZE, 64 * MAP_TILE_SIZE};
+        case 3: //Snow
+        Area = (Rectangle) {32 * MAP_TILE_SIZE, 1 * MAP_TILE_SIZE, (95-1) * MAP_TILE_SIZE, (16-1) * MAP_TILE_SIZE};
         break;
-        case 4:
-        Area = (Rectangle) {64 * MAP_TILE_SIZE, 0 * MAP_TILE_SIZE, 96 * MAP_TILE_SIZE, 32 * MAP_TILE_SIZE};
+        case 4: //Field
+        //Area = (Rectangle) {64 * MAP_TILE_SIZE, 0 * MAP_TILE_SIZE, 96 * MAP_TILE_SIZE, 32 * MAP_TILE_SIZE};
         break;
         case 5:
         //Area = (Rectangle) {64 * MAP_TILE_SIZE, 0 * MAP_TILE_SIZE, 96 * MAP_TILE_SIZE, 32 * MAP_TILE_SIZE};
@@ -312,26 +313,12 @@ void DrawDesert(int x, int y, Tile &Sand)
         );
     }
 }
-/*void MetaTileRange(Tile &WorldTile, MetaTiles &MTile)
-{
-    if(!WorldTile.IsHarsh)
-        return ;
-
-    //WorldTile.SetRangeEffect();
-}*/
 
 void Tile::SetRangeEffect(std::pmr::list<Vector2> Points)
 {
     for(Vector2 Point : Points)
         PolyRangeOfEffect.Points.push_back(Point);
 }
-
-/*bool GroupTile::DistanceFromPlayer(Player Dude)
-{
-    float Distance = 0.0f;
-
-    return IsNearPlayer;
-    }*/
 
 bool isVisible(Tile Object, Camera2D MainCam)
 {
@@ -343,13 +330,39 @@ bool isVisible(Tile Object, Camera2D MainCam)
         (Object.TileY*MAP_TILE_SIZE) < BottomRight.y;
 }
 
-void LoadTilesLocations(std::vector<Tile> &TileObjects, bool IsHarsh, int frame, Vector2 Locations[])
+bool isNear(Vector2 &Location, Camera2D MainCam)
 {
-    for(int i = 0; i < (sizeof(Locations) / sizeof(Locations[0])); i++)
+    Vector2 TopLeft = GetScreenToWorld2D({0, 0}, MainCam);
+    Vector2 BottomRight = GetScreenToWorld2D({(float) SCREENW, (float) SCREENH}, MainCam);
+    return (Location.x*MAP_TILE_SIZE) + MAP_TILE_SIZE > TopLeft.x &&
+        (Location.x*MAP_TILE_SIZE) < BottomRight.x &&
+        (Location.y*MAP_TILE_SIZE) + MAP_TILE_SIZE > TopLeft.y &&
+        (Location.y*MAP_TILE_SIZE) < BottomRight.y;
+}
+
+void LoadTilesLocations(std::vector<Tile> &TileObjects, bool IsHarsh, int frame, Vector2 Locations[], int ArraySize)
+{
+    for(int i = 0; i < ArraySize; i++)
     {
+        TileObjects.push_back(Tile());
         TileObjects[i].IsHarsh = IsHarsh;
-        TileObjects[i].TileSprite = Sprite("resource/WorldTile.png", (float)0, (float) 0, 10);
+        TileObjects[i].TileX = Locations[i].x;
+        TileObjects[i].TileY = Locations[i].y;
+        TileObjects[i].TileSprite = Sprite("resource/ObstaclesTiles.png", TileObjects[i].TileX * MAP_TILE_SIZE, TileObjects[i].TileY * MAP_TILE_SIZE, 10);
         TileObjects[i].TileSprite.ChangeFrame(frame);
     }
-
+}
+void LoadAppleTilesLocations(std::vector<AppleTile> &TileObjects, Vector2 Locations[])
+{
+    for(int i = 0; i < 55; i++)
+    {
+        TileObjects.push_back(AppleTile());
+        TileObjects[i].IsHarsh = false;
+        TileObjects[i].TileX = Locations[i].x;
+        TileObjects[i].TileY = Locations[i].y;
+        TileObjects[i].hasBeingUsed = false;
+        TileObjects[i].TileSprite = Sprite("resource/FruitTiles.png", TileObjects[i].TileX * MAP_TILE_SIZE, TileObjects[i].TileY * MAP_TILE_SIZE, 10);
+        TileObjects[i].TileSprite.ChangeFrame(0);
+        TileObjects[i].Score = 5;
+    }
 }

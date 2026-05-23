@@ -48,13 +48,6 @@ void Player::UpdateMovement()
 {
     Vector2 PreviousPosition = {(float)PlayerTileX*MAP_TILE_SIZE, (float)(63 - PlayerTileY) * MAP_TILE_SIZE};
 
-    const float MOVE_DELAY = 0.07f;
-    static float MoveTimer = 0.0f;
-    MoveTimer += GetFrameTime();
-
-    if(MoveTimer < MOVE_DELAY) return ;
-    MoveTimer = 0;
-
     PlayerPosition.x = PlayerTileX * MAP_TILE_SIZE;
     PlayerPosition.y = (63 - PlayerTileY) * MAP_TILE_SIZE;
 
@@ -67,8 +60,8 @@ void Player::UpdateMovement()
     PlayerTileY = std::max(0, std::min(PlayerTileY, 64 - 1));
 
 
-    std::cout << "Player:" << PlayerTileX << ", " << PlayerTileY << std::endl;
-    std::cout << 0 << ": " << Tail[0].x / MAP_TILE_SIZE << ", " << Tail[0].y / MAP_TILE_SIZE << std::endl;
+    //std::cout << "Player:" << PlayerTileX << ", " << PlayerTileY << std::endl;
+    //std::cout << 0 << ": " << Tail[0].x / MAP_TILE_SIZE << ", " << Tail[0].y / MAP_TILE_SIZE << std::endl;
     for(int index = 0; index < TailLen; index++)
     {
         Vector2 PreviousPositionAux = Tail[index];
