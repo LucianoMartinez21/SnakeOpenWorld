@@ -1,8 +1,14 @@
 #include "init.h"
 #include "core.h"
 #include "global.h"
+#include "tile.h"
+#include <algorithm>
+#include <cstring>
+#include <iostream>
+#include <ostream>
 #include <raylib.h>
 #include <string>
+#include <vector>
 
 Player SnakeDude;
 Map MainMap;
@@ -10,6 +16,7 @@ RenderTexture2D FogOfWar;
 std::vector <Tile> World;
 std::vector <AppleTile> Fruits;
 std::vector <Tile> Obstacles;
+ObjectTile KeyObjects[3];
 GAME_STATE GameFlow;
 Tile Wall;
 
@@ -27,7 +34,8 @@ void InitCore()
     SnakeDude.Score = 0;
     SnakeDude.Life = 100;
     SnakeDude.TailLen = 0;
-    //Fruits[i].TileSprite = Sprite("resource/FruitTiles.png", Fruits[i].TileX * MAP_TILE_SIZE, Fruits[i].TileY * MAP_TILE_SIZE, 10);
+    memset(SnakeDude.Tail, 0, sizeof SnakeDude.Tail);
+    SnakeDude.CleanInventory();
 
     //Declare Map Tiles
     MainMap.TileX = 96;
@@ -58,13 +66,35 @@ void InitCore()
         World[i].TileSprite.ChangeFrame(i);
         Obstacles.push_back(Tile());
         Obstacles[i].IsHarsh = true;
-        Obstacles[i].TileSprite = Sprite("resource/ObstaclesTiles.png", 0, 0, 10);
+        Obstacles[i].TileSprite = Sprite("resource/ObstaclesTiles.png", 0.0f, 0.0f, 10);
         Obstacles[i].TileSprite.ChangeFrame(i);
+        if(i < 3)
+        {
+            KeyObjects[i].Object = i + 1;
+            KeyObjects[i].IsHarsh = false;
+            KeyObjects[i].TileSprite = Sprite("resource/KeyObjects.png", 0.0f, 0.0f, 10);
+            KeyObjects[i].TileSprite.ChangeFrame(i);
+            KeyObjects[i].hasBeingUsed = false;
+            switch (i) {
+                case 0:
+                    KeyObjects[i].TileX = 40;
+                    KeyObjects[i].TileY = 7;
+                    break;
+                case 1:
+                    KeyObjects[i].TileX = 27;
+                    KeyObjects[i].TileY = 37;
+                    break;
+                case 2:
+                    KeyObjects[i].TileX = 87;
+                    KeyObjects[i].TileY = 23;
+                    break;
+
+            }
+        }
     }
 
     Wall.IsHarsh = true;
-    Wall.TileSprite = Sprite("resource/WorldTile.png", (float)0, (float) 0, 10);
-    //Wall.SetRangeEffect(InitRanges(5));
+    Wall.TileSprite = Sprite("resource/WorldTile.png", 0.0f, 0.0f, 10);
     Wall.TileSprite.ChangeFrame(5);
 
     LoadAppleTilesLocations(Fruits, FruitLocations);
@@ -107,6 +137,8 @@ int PaletteSpeedLoc;
 Shader ShaderBackground;
 Texture2D MainMenu;
 int LocTime;
+std::pmr::vector<int> KeyBuffer;
+int KeyCounter = 0;
 
 void InitShader()
 {
@@ -151,4 +183,86 @@ void InitShader()
     SetShaderValue(ShaderBackground, PaletteSpeedLoc, &PaletteSpeed, SHADER_UNIFORM_FLOAT);
 
     SetShaderValueTexture(ShaderBackground, PaletteLoc, MainMenu);
+}
+bool RevealSecret[3] = {false};
+void Secrets()
+{
+    if (IsKeyPressed(KEY_SPACE) || IsKeyPressed(KEY_ENTER)) {
+        RevealSecret[0] = false;
+        RevealSecret[1] = false;
+        RevealSecret[2] = false;
+        KeyBuffer.clear();
+        return;
+    }
+    KeyCounter = GetKeyPressed();
+    if(KeyCounter != KEY_NULL)
+    {
+        if(GetKeyName(KeyCounter) == GetKeyName(KEY_M) ||
+            GetKeyName(KeyCounter) == GetKeyName(KEY_U)||
+            GetKeyName(KeyCounter) == GetKeyName(KEY_S)||
+            GetKeyName(KeyCounter) == GetKeyName(KEY_I)||
+            GetKeyName(KeyCounter) == GetKeyName(KEY_C)||
+            GetKeyName(KeyCounter) == GetKeyName(KEY_Z)||
+            GetKeyName(KeyCounter) == GetKeyName(KEY_A)||
+            GetKeyName(KeyCounter) == GetKeyName(KEY_R)
+            )
+            KeyBuffer.push_back(KeyCounter);
+        if(
+            KeyBuffer[0] == KEY_M &&
+            KeyBuffer[1] == KEY_U &&
+            KeyBuffer[2] == KEY_S &&
+            KeyBuffer[3] == KEY_I &&
+            KeyBuffer[4] == KEY_C
+            )
+            {
+                RevealSecret[0] = true;
+                RevealSecret[1] = false;
+                RevealSecret[2] = false;
+                KeyBuffer.clear();
+            }
+        if(
+            KeyBuffer[0] == KEY_S &&
+            KeyBuffer[1] == KEY_I &&
+            KeyBuffer[2] == KEY_C &&
+            KeyBuffer[3] == KEY_M &&
+            KeyBuffer[4] == KEY_U
+            )
+            {
+                RevealSecret[0] = false;
+                RevealSecret[1] = true;
+                RevealSecret[2] = false;
+                KeyBuffer.clear();
+            }
+        if(
+            KeyBuffer[0] == KEY_Z &&
+            KeyBuffer[1] == KEY_A &&
+            KeyBuffer[2] == KEY_R &&
+            KeyBuffer[3] == KEY_A
+            )
+            {
+                RevealSecret[0] = false;
+                RevealSecret[1] = false;
+                RevealSecret[2] = true;
+                KeyBuffer.clear();
+            }
+        //KeyPressed = GetKeyName(KeyCounter);
+    }
+    if(RevealSecret[0])
+    {
+        DrawText(
+        "Music heard on the Making:\nBlack Soul Sickness by KarciusMirage by Camel\nKind of Blue by Miles Davis\nIntrospection by Luiz Bonfá\nWet Land by Hiroshi Yoshimura\nConcierto (Album) by Jim Hall\nSi on avait besoin d'une cinquième saison by Harmonium\nDepois do Fim by Bacamarte\nThe Inner Mounting Flame by The Mahavishnu Orchestra\nBitches Brew By Miles Davis\nSvitanie Blue Effect By (Modrý Efekt)\nSpectrum By Billy Cobham\nRebel by EsDeeKid\nClône by Tiemko\nThe Soothsayer by Wayne Shorter\nTemplars - In Sacred Blood by John Zorn\nFrom Silence to Somewhere by Wobbler\nWhen Dream And Day Unite by Dream Theater\nAwake by Dream Theater\nTanquemante by Inundaremos\n"
+        , SCREENW/2 - 30, 0, 20, RAYWHITE);
+    }
+    if(RevealSecret[1])
+    {
+        DrawText(
+        "Music heard on the Making:\nFilin by Melissa Aldana\nDistancia by Congelador\nEspero podamos ver un ovni juntxs by Rubio\nAmigos, vecinos, parientes by el mejor de los camilos\nCírculo de fuego by Légamo\nTropiezos y certezas, ceci\nPrimer Vuelo by ceci\nplease be nice by Camping in Alaska\nBATHE by Camping in Alaska\nOperation Doomsday by MF DOOM\nTake Me To Your Leader by King Geedorah aka MF DOOM\nVaudeville Villain by Viktor Vaughn aka MF DOOM\nVenomous Villain (VV:2) by Viktor Vaughn aka MF DOOM\nMM..FOOD by MF DOOM\nBorn Like This by MF DOOM"
+        , SCREENW/2 - 30, 0, 20, RAYWHITE);
+    }
+    if(RevealSecret[2])
+    {
+        DrawText(
+        "Grande Zara-Tustra por volver con un comic"
+        , SCREENW/2 - 150, 0, 20, RAYWHITE);
+    }
 }

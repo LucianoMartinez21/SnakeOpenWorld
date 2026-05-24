@@ -51,6 +51,12 @@ bool RayCastPolygon(Vector2 Position, Polygon &Poly)
 
 bool Tile::IsInRange(Player &Dude)
 {
+    if(!IsHarsh)
+    {
+        IsPlayerInRange = false;
+        return IsPlayerInRange;
+    }
+
     if(!PolyRangeOfEffect.Points.empty())
     {
         if(RayCastPolygon(Dude.PlayerPosition, PolyRangeOfEffect))

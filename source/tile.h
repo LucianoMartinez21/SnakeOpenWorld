@@ -53,7 +53,7 @@ class GroupTile
 
 typedef enum ObjectType{
     FLOATS = 1,
-    JACKET = 2,
+    SCARF = 2,
     SUNGLASSES = 3
 }ObjectType;
 

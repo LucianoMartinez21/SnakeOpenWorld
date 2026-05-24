@@ -1,16 +1,18 @@
 #include "conflict.h"
+#include "init.h"
 #include "tile.h"
 #include <iostream>
 #include <raylib.h>
 
-void CheckCoalition(Tile &Object, Player &Dude)
+void CheckCoalition(ObjectTile &Item, Player &Dude)
 {
-
+    if(Item.hasBeingUsed)
+        return ;
     int YPlayer = YInvertedFix(Dude.PlayerTileY, 64);
-    if(Object.TileX == Dude.PlayerTileX && Object.TileY == YPlayer)
+    if(Item.TileX == Dude.PlayerTileX && Item.TileY == YPlayer)
     {
-        if(Object.IsHarsh)
-            Dude.IsDead = true;
+        SnakeDude.AddInventory(Item.Object);
+        Item.hasBeingUsed = true;
     }
 
 }
@@ -32,7 +34,6 @@ void CheckCoalitionFruit(AppleTile &Object, Player &Dude)
     int YPlayer = YInvertedFix(Dude.PlayerTileY, 64);
     if(Object.TileX == Dude.PlayerTileX && Object.TileY == YPlayer)
     {
-
         Dude.Score += Object.Score;
         Object.hasBeingUsed = true;
         Dude.TailLen += 1;

@@ -33,4 +33,9 @@ extern int PaletteSpeedLoc;
 extern int LocTime;
 extern Shader ShaderBackground;
 extern Texture2D MainMenu;
+extern ObjectTile KeyObjects[3];
+extern std::pmr::vector<int> KeyBuffer;
+extern int KeyCounter;
 void InitShader();
+
+void Secrets();

@@ -1,7 +1,9 @@
 #include "player.h"
 #include "animation.h"
 #include "global.h"
+#include "init.h"
 #include "sprite.h"
+#include "tile.h"
 #include <iostream>
 #include <raylib.h>
 
@@ -94,15 +96,29 @@ void Player::CheckCoalition() //Checks the Coalition of the player and itself
             IsDead = true;
     }
 }
-//void InadequateEnviroment(); //Harsh conditions of the enviroment will start slowly killing the player
-//void PositiveCoalition(AppleTile Fruit);
 
 void Player::ControllerHandler()
 {
-    if (IsKeyDown(KEY_RIGHT))   {SetPlayerSpeed(1.0f, 0.0f);}
-    if (IsKeyDown(KEY_LEFT))    {SetPlayerSpeed(-1.0f, 0.0f);}
-    if (IsKeyDown(KEY_UP))      {SetPlayerSpeed(0.0f, -1.0f);}
-    if (IsKeyDown(KEY_DOWN))    {SetPlayerSpeed(0.0f, 1.0f);}
+    if (IsKeyDown(KEY_RIGHT) && DirFacing != LEFT)
+    {
+        SetPlayerSpeed(1.0f, 0.0f);
+        DirFacing = RIGHT;
+    }
+    if (IsKeyDown(KEY_LEFT) && DirFacing != RIGHT)
+    {
+        SetPlayerSpeed(-1.0f, 0.0f);
+        DirFacing = LEFT;
+    }
+    if (IsKeyDown(KEY_UP) && DirFacing != DOWN)
+    {
+        SetPlayerSpeed(0.0f, -1.0f);
+        DirFacing = UP;
+    }
+    if (IsKeyDown(KEY_DOWN) && DirFacing != UP)
+    {
+        SetPlayerSpeed(0.0f, 1.0f);
+        DirFacing = DOWN;
+    }
 }
 
 //void Draw tiles()
@@ -116,4 +132,26 @@ void Player::DrawPlayer()
         Tails.ChangeFrame(1);
         Tails.DrawSpritePro(Tail[Index], { MAP_TILE_SIZE, MAP_TILE_SIZE }, {0,0}, 0.0f);
     }
+}
+
+void Player::AddInventory(int Item)
+{
+    Inventory.push_back(Item);
+}
+
+void Player::CheckKeyItem()
+{
+    for(int i = 0; i < Inventory.size(); i++)
+    {
+        if(Inventory[i] == FLOATS)
+            World[2].IsHarsh = false;
+        if(Inventory[i] == SCARF)
+            World[3].IsHarsh = false;
+        if(Inventory[i] == SUNGLASSES)
+            World[0].IsHarsh = false;
+    }
+}
+void Player::CleanInventory()
+{
+    Inventory.clear();
 }

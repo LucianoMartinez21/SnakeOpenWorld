@@ -62,13 +62,17 @@ int main(void)
             case CREDITS:
                 BeginDrawing();
                 ClearBackground(BLACK);
+                Secrets();
                     BeginShaderMode(ShaderBackground);
                         DrawTexture(MainMenu, 0, 0, WHITE);
                         DrawTexture(MainMenu, MainMenu.width, 0, Fade(WHITE, 0));
                     EndShaderMode();
                     DrawText("SnakeDude Adventure", (SCREENW/2)-(19*20), SCREENH/2, 20, RAYWHITE);
-
-                    DrawText(">Back", (SCREENW/2)-(19*20), (SCREENH/2)+50, 20, RAYWHITE);
+                    DrawText("Created by Luciano Martínez", (SCREENW/2)-(19*20), (SCREENH/2)+50, 20, RAYWHITE);
+                    DrawText("Designed by Luciano Martínez", (SCREENW/2)-(19*20), (SCREENH/2)+70, 20, RAYWHITE);
+                    DrawText("Programmed by Luciano Martínez", (SCREENW/2)-(19*20), (SCREENH/2)+90, 20, RAYWHITE);
+                    DrawText("Made in Raylib", (SCREENW/2)-(19*20), (SCREENH/2)+110, 20, RAYWHITE);
+                    DrawText(">Back", (SCREENW/2)-(19*20), (SCREENH/2)+130, 20, RAYWHITE);
                     if(IsKeyPressed(KEY_SPACE) || IsKeyPressed(KEY_ENTER))
                         GameFlow = MAIN_MENU;
                 EndDrawing();
@@ -79,9 +83,9 @@ int main(void)
                 double now = GetTime();
                 if (now - lastMoveTime >= MOVE_DELAY) {
                     lastMoveTime = now;
-                    SnakeDude.ControllerHandler();
                     SnakeDude.UpdateMovement();
                 }
+                SnakeDude.ControllerHandler();
                 SnakeDude.FollowTarget();
                 //Player's Limits in the map
                 SnakeDude.CheckMapLimits(MainMap);
@@ -89,6 +93,7 @@ int main(void)
                 SnakeDude.CheckCameraMapLimits();
                 //Check if player has colide with itself.
                 SnakeDude.CheckCoalition();
+                SnakeDude.CheckKeyItem();
                 //Previous visited Tiles are set to parcial fog
                 for (unsigned int i = 0; i < MainMap.TileX*MainMap.TileY; i++) if (MainMap.TileFog[i] == 1) MainMap.TileFog[i] = 2;
                 //Stablish the Player's Tile coord. Relative to it's Vec2 Position.
@@ -124,21 +129,37 @@ int main(void)
                                 DrawLimitWalls(x, y, Wall);
                             }
                         }
+                        cout << World[0].IsHarsh << endl;
                         World[0].IsInRange(SnakeDude);
                         World[2].IsInRange(SnakeDude);
                         World[3].IsInRange(SnakeDude);
+                        SnakeDude.CheckCoalition();
                         //Draw Fruits
                         for (int i = 0; i < Fruits.size(); i++)
                         {
-                            CheckCoalitionFruit(Fruits[i], SnakeDude);
-                            SnakeDude.CheckCoalition();
                             if(Fruits[i].hasBeingUsed)
                                 continue;
+                            CheckCoalitionFruit(Fruits[i], SnakeDude);
                             if(isVisible(Fruits[i], SnakeDude.PlayerCamera))
                             {
                                 Fruits[i].TileSprite.DrawSpritePro(
                                     (Vector2){Fruits[i].TileSprite.SpritePosition.x,
                                             Fruits[i].TileSprite.SpritePosition.y},
+                                    (Vector2){ MAP_TILE_SIZE, MAP_TILE_SIZE },
+                                    (Vector2){ (float)0, (float)0 }, 0.0f
+                                );
+                            }
+                        }
+                        for(int i = 0 ; i < 3; i++)
+                        {
+                            if(KeyObjects[i].hasBeingUsed)
+                                continue;
+                            CheckCoalition(KeyObjects[i], SnakeDude);
+                            if(isVisible(KeyObjects[i], SnakeDude.PlayerCamera))
+                            {
+                                KeyObjects[i].TileSprite.DrawSpritePro(
+                                    (Vector2){(float)KeyObjects[i].TileX * MAP_TILE_SIZE,
+                                            (float)KeyObjects[i].TileY * MAP_TILE_SIZE},
                                     (Vector2){ MAP_TILE_SIZE, MAP_TILE_SIZE },
                                     (Vector2){ (float)0, (float)0 }, 0.0f
                                 );

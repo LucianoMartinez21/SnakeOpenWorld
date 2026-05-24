@@ -38,6 +38,9 @@ class Player{
         void DrawPlayer();
 
         //Inventory
+        void AddInventory(int Item);
+        void CheckKeyItem();
+        void CleanInventory();
 
         //Public Vars
         Vector2 PlayerPosition;
