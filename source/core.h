@@ -3,8 +3,6 @@
 #include <list>
 #include <vector>
 #include "global.h"
-//#include "tile.h"
-//#include "raygui.h"
 
 class Polygon
 {

@@ -9,5 +9,5 @@ void UpdateVision(int TileX, int TileY, Map &Mapa)
 
 int YInvertedFix(int TileY, int HeightSize)
 {
-    return abs((long)TileY + 1 - HeightSize);
+    return abs(TileY + 1 - HeightSize);
 }

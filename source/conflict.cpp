@@ -1,7 +1,6 @@
 #include "conflict.h"
 #include "init.h"
 #include "tile.h"
-#include <iostream>
 #include <raylib.h>
 
 void CheckCoalition(ObjectTile &Item, Player &Dude)

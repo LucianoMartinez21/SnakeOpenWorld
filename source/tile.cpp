@@ -1,21 +1,13 @@
 #include "tile.h"
 #include "core.h"
 #include "global.h"
-#include "map.h"
 #include "player.h"
 #include "sprite.h"
 #include <cstdio>
 #include <ctime>
-#include <iostream>
-#include <iterator>
 #include <list>
-#include <ostream>
 #include <raylib.h>
 
-/*Tile::Tile()
-{
-    TileSprite = Sprite("", 0, 0, 0);
-    }*/
 Tile::Tile() : TileSprite("", 0.0f, 0.0f, 0)
 {
     TileX = 0;
@@ -98,23 +90,8 @@ Rectangle InitRanges(int i)
         case 0: //desert
         Area = (Rectangle) {16 * MAP_TILE_SIZE, 24 * MAP_TILE_SIZE, (48-1) * MAP_TILE_SIZE, (48-1) * MAP_TILE_SIZE};
         break;
-        case 1: //Shallow Waters
-        //Area = (Rectangle) {0 * MAP_TILE_SIZE, 32 * MAP_TILE_SIZE, 32 * MAP_TILE_SIZE, 64 * MAP_TILE_SIZE};
-        break;
-        case 2:
-        //Area = (Rectangle) {32 * MAP_TILE_SIZE, 0 * MAP_TILE_SIZE, 64 * MAP_TILE_SIZE, 32 * MAP_TILE_SIZE};
-        break;
         case 3: //Snow
         Area = (Rectangle) {32 * MAP_TILE_SIZE, 1 * MAP_TILE_SIZE, (95-1) * MAP_TILE_SIZE, (16-1) * MAP_TILE_SIZE};
-        break;
-        case 4: //Field
-        //Area = (Rectangle) {64 * MAP_TILE_SIZE, 0 * MAP_TILE_SIZE, 96 * MAP_TILE_SIZE, 32 * MAP_TILE_SIZE};
-        break;
-        case 5:
-        //Area = (Rectangle) {64 * MAP_TILE_SIZE, 0 * MAP_TILE_SIZE, 96 * MAP_TILE_SIZE, 32 * MAP_TILE_SIZE};
-        break;
-        case 6:
-        //Area = (Rectangle) {0 * MAP_TILE_SIZE, 0 * MAP_TILE_SIZE, 32 * MAP_TILE_SIZE, 32 * MAP_TILE_SIZE};
         break;
 
     }

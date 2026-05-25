@@ -8,8 +8,6 @@
 #include "map.h"
 #include "raylib.h"
 #include "sprite.h"
-#include "grid.h"
-#include <iostream>
 #include <vector>
 #include "conflict.h"
 #include "tilelocation.h"
@@ -129,7 +127,6 @@ int main(void)
                                 DrawLimitWalls(x, y, Wall);
                             }
                         }
-                        cout << World[0].IsHarsh << endl;
                         World[0].IsInRange(SnakeDude);
                         World[2].IsInRange(SnakeDude);
                         World[3].IsInRange(SnakeDude);
@@ -167,8 +164,6 @@ int main(void)
                         }
                         for(int i = 0; i < 401; i++)
                         {
-                            //j = ((i + 1) % 90);
-                            //cout << "test value: " << j << "\niteration: " << i << endl;
                             if(isNear(CoralLocations[i], SnakeDude.PlayerCamera))
                             {
                                 Obstacles[0].TileSprite.DrawSpritePro(

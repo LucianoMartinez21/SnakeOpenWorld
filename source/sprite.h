@@ -9,7 +9,6 @@ class Sprite
     public:
         Texture2D SpriteTexture;
         Vector2 SpritePosition, SpriteSpeed;
-        //uint8_t LocalFrameCounter;
         uint8_t FrameCounter;
         uint8_t LengthFrame;
         Rectangle FrameRectangle;

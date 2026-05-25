@@ -2,12 +2,8 @@
 #include "core.h"
 #include "global.h"
 #include "tile.h"
-#include <algorithm>
 #include <cstring>
-#include <iostream>
-#include <ostream>
 #include <raylib.h>
-#include <string>
 #include <vector>
 
 Player SnakeDude;
@@ -25,11 +21,11 @@ void InitCore()
     SnakeDude.SetPlayerPos(SCREENW/2, SCREENH/2);
     SnakeDude.PlayerTileX = (SCREENW/2)/MAP_TILE_SIZE;
     SnakeDude.PlayerTileY = (SCREENH/2)/MAP_TILE_SIZE;
-    SnakeDude.SetCamTarget((float) SnakeDude.PlayerPosition.x + PLAYER_SIZE / 2,(float) SnakeDude.PlayerPosition.y + PLAYER_SIZE / 2);
+    SnakeDude.SetCamTarget((float) SnakeDude.PlayerPosition.x + (float)PLAYER_SIZE / 2,(float) SnakeDude.PlayerPosition.y + (float)PLAYER_SIZE / 2);
     SnakeDude.InitCamOffset();
     SnakeDude.SetCamRotation(0);
     SnakeDude.SetCamZoom(2.0f);
-    SnakeDude.PlayerSprite = Sprite("resource/SnakeTilesAlt.png", SCREENW/2, SCREENH/2, 10);
+    SnakeDude.PlayerSprite = Sprite("resource/SnakeTilesAlt.png", (float)SCREENW/2, (float)SCREENH/2, 10);
     SnakeDude.IsDead = false;
     SnakeDude.Score = 0;
     SnakeDude.Life = 100;
@@ -245,7 +241,6 @@ void Secrets()
                 RevealSecret[2] = true;
                 KeyBuffer.clear();
             }
-        //KeyPressed = GetKeyName(KeyCounter);
     }
     if(RevealSecret[0])
     {

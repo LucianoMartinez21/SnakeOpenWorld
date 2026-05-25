@@ -1,10 +1,8 @@
 #include "player.h"
-#include "animation.h"
 #include "global.h"
 #include "init.h"
 #include "sprite.h"
 #include "tile.h"
-#include <iostream>
 #include <raylib.h>
 
 Player::Player() : PlayerSprite("", 0, 0, 0)
@@ -17,8 +15,7 @@ void Player::SetCamTarget(short int x, short int y)
 }
 void Player::InitCamOffset()
 {
-    //PlayerCamera.offset = (Vector2){ SCREENW/2.0f, SCREENH/2.0f };//Vector2{ player.x + player.width / 2, player.y + player.height / 2 };
-    PlayerCamera.offset = (Vector2){ PlayerPosition.x - PLAYER_SIZE / 2, PlayerPosition.y - PLAYER_SIZE / 2 };
+    PlayerCamera.offset = (Vector2){ PlayerPosition.x - (float)PLAYER_SIZE / 2, PlayerPosition.y - (float)PLAYER_SIZE / 2 };
 }
 void Player::SetCamOffset(Vector2 Vec2)
 {
@@ -61,9 +58,6 @@ void Player::UpdateMovement()
     PlayerTileX = std::max(0, std::min(PlayerTileX, 96 - 1));
     PlayerTileY = std::max(0, std::min(PlayerTileY, 64 - 1));
 
-
-    //std::cout << "Player:" << PlayerTileX << ", " << PlayerTileY << std::endl;
-    //std::cout << 0 << ": " << Tail[0].x / MAP_TILE_SIZE << ", " << Tail[0].y / MAP_TILE_SIZE << std::endl;
     for(int index = 0; index < TailLen; index++)
     {
         Vector2 PreviousPositionAux = Tail[index];
@@ -121,7 +115,6 @@ void Player::ControllerHandler()
     }
 }
 
-//void Draw tiles()
 void Player::DrawPlayer()
 {
     PlayerSprite.ChangeFrame(0);

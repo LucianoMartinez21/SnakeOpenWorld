@@ -1,5 +1,4 @@
 #pragma once
-//#include "player.h"
 #include "raylib.h"
 #include "global.h"
 #include <cstdlib>
