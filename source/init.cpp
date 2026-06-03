@@ -163,7 +163,7 @@ void InitShader()
     float SpeedVertical         = 0.0f;
     float ScrollDirection[2]    = {0.0f,0.0f};
     float ScrollSpeed           = 0.08f;
-    int EnablePalette           = 0; // 1 means true, 0 means false
+    int EnablePalette           = 1; // 1 means true, 0 means false
     float PaletteSpeed          = 0.1f;
 
     SetShaderValue(ShaderBackground, SHeightLoc, &Screen, SHADER_UNIFORM_FLOAT);
@@ -178,7 +178,7 @@ void InitShader()
     SetShaderValue(ShaderBackground, EnablePaletteLoc, &EnablePalette, SHADER_UNIFORM_INT);
     SetShaderValue(ShaderBackground, PaletteSpeedLoc, &PaletteSpeed, SHADER_UNIFORM_FLOAT);
 
-    SetShaderValueTexture(ShaderBackground, PaletteLoc, MainMenu);
+    SetShaderValueTexture(ShaderBackground, GetShaderLocation(ShaderBackground, "texture0"), MainMenu);
 }
 bool RevealSecret[3] = {false};
 void Secrets()

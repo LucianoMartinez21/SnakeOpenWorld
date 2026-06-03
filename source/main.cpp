@@ -55,6 +55,7 @@ int main(void)
                         if(IsKeyPressed(KEY_SPACE) || IsKeyPressed(KEY_ENTER))
                             GameFlow = CREDITS;
                     }
+                    DrawText("Version 1.0 - 2026", (SCREENW)-190, (SCREENH)-20, 20, RAYWHITE);
                 EndDrawing();
                 break;
             case CREDITS:
@@ -71,6 +72,7 @@ int main(void)
                     DrawText("Programmed by Luciano Martínez", (SCREENW/2)-(19*20), (SCREENH/2)+90, 20, RAYWHITE);
                     DrawText("Made in Raylib", (SCREENW/2)-(19*20), (SCREENH/2)+110, 20, RAYWHITE);
                     DrawText(">Back", (SCREENW/2)-(19*20), (SCREENH/2)+130, 20, RAYWHITE);
+                    DrawText("Version 1.0 - 2026", (SCREENW)-190, (SCREENH)-20, 20, RAYWHITE);
                     if(IsKeyPressed(KEY_SPACE) || IsKeyPressed(KEY_ENTER))
                         GameFlow = MAIN_MENU;
                 EndDrawing();
